@@ -24,6 +24,20 @@ int main()
             // "close requested" event: we close the window
             if (game.GetEvent().type == sf::Event::Closed)
                 game.close();
+            if (game.GetEvent().type == sf::Event::KeyPressed) {
+                if (game.GetEvent().key.code == sf::Keyboard::Down) {
+                    player.animate(game.Getelapsed());
+                }
+                if (game.GetEvent().key.code == sf::Keyboard::Up) {
+                    player.move(0,-player.get_speedy()*game.Getelapsed().asSeconds());
+                }
+                if (game.GetEvent().key.code == sf::Keyboard::Left) {
+                    player.move(-player.getspeedx() * game.Getelapsed().asSeconds(),0);
+                }
+                if (game.GetEvent().key.code == sf::Keyboard::Right) {
+                    player.move(player.getspeedx() * game.Getelapsed().asSeconds(), 0);
+                }
+            }
         }
         enemy.animate(game.Getelapsed());
         // clear the window with black color

@@ -14,7 +14,10 @@ public:
 	void add_hp();
 	//ustawia liczbê ¿yæ
 	void set_hp(int x);
+	//ustawia speedy
 	void set_speedy(int x);
+	//zwraca speedy
+	double get_speedy();
 private:
 	double speedy = 0;
 	int hp;

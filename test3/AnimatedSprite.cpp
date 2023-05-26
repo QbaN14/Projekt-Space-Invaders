@@ -32,3 +32,7 @@ void AnimatedSprite::set_speedy(int x)
 {
     speedy = x;
 }
+double AnimatedSprite::get_speedy()
+{
+    return speedy;
+}

@@ -7,6 +7,9 @@ public:
 	Player();
 	//dodaje okreslona liczbe punktow
 	void add_points(int pts);
+	//zwraca speedx
+	double getspeedx();
 private:
 	int points = 0;
+	double speedx = 200;
 };
