@@ -23,3 +23,38 @@ sf::Time Game::Getelapsed()
 {
 	return elapsed;
 }
+void Game::Play()
+{
+	Player player;
+	Normal_Enemy enemy;
+	srand(time(NULL));
+    while (isOpen()) {
+        Setelapsed(GetClock().restart());
+        while (pollEvent(GetEvent())) {
+            if (GetEvent().type == sf::Event::Closed)
+                close();
+            if (GetEvent().type == sf::Event::KeyPressed) {
+                if (GetEvent().key.code == sf::Keyboard::Down) {
+                    player.animate(Getelapsed());
+                }
+                if (GetEvent().key.code == sf::Keyboard::Up) {
+                    player.move(0, -player.get_speedy() * Getelapsed().asSeconds());
+                }
+                if (GetEvent().key.code == sf::Keyboard::Left) {
+                    player.move(-player.getspeedx() * Getelapsed().asSeconds(), 0);
+                }
+                if (GetEvent().key.code == sf::Keyboard::Right) {
+                    player.move(player.getspeedx() * Getelapsed().asSeconds(), 0);
+                }
+            }
+        }
+        enemy.animate(Getelapsed());
+
+        clear(sf::Color::Black);
+
+        draw(player);
+        draw(enemy);
+
+        display();
+    }
+}

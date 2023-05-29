@@ -36,3 +36,19 @@ double AnimatedSprite::get_speedy()
 {
     return speedy;
 }
+bool AnimatedSprite::check_x()
+{
+    if (getPosition().x+getTextureRect().width > 800|| getPosition().x - getTextureRect().width < 0)
+    {
+        return false;
+    }
+    return true;
+}
+bool AnimatedSprite::check_y()
+{
+    if (getPosition().y + getTextureRect().height > 600)
+    {
+        return false;
+    }
+    return true;
+}

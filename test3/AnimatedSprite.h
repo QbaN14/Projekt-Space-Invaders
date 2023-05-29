@@ -18,6 +18,10 @@ public:
 	void set_speedy(int x);
 	//zwraca speedy
 	double get_speedy();
+	//sprawdza czy tekstura miesci sie na ekranie w x
+	bool check_x();
+	//sprawdza czy tekstura miesci sie na ekranie w y
+	bool check_y();
 private:
 	double speedy = 0;
 	int hp;
