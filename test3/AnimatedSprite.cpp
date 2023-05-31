@@ -1,11 +1,12 @@
 #include "AnimatedSprite.h"
 #include <iostream>
-AnimatedSprite::AnimatedSprite(std::string path)
+AnimatedSprite::AnimatedSprite(std::string path,sf::IntRect rect)
 {
     srand(time(NULL));
     if (!texture.loadFromFile(path)) {
         std::cout << "Could not load texture" << std::endl;
     }
+    setTextureRect(rect);
     setTexture(texture);
 }
 void AnimatedSprite::animate(sf::Time elapsed)

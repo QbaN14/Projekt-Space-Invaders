@@ -5,7 +5,7 @@ class AnimatedSprite :public sf::Sprite
 {
 public:
 	//odpowiada za wczytanie tekstury i ustawienie pozycji
-	AnimatedSprite(std::string path);
+	AnimatedSprite(std::string path, sf::IntRect rect);
 	//odpowiada za poruszanie siê
 	void animate(sf::Time elapsed);
 	//odpowiada za usuniêcie 1 ¿ycia

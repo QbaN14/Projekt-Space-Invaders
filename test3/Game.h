@@ -18,8 +18,15 @@ public:
 	sf::Time Getelapsed();
 	//zwraca event
 	sf::Event& GetEvent();
+	//dodaje do wektora przeciwnika
+	void add_enemy();
+	//usuwa z wektora przeciwnika
+	//void remove_enemy(Normal_Enemy enemy);
+	//usuwa przeciwnika jesli jest po za plansz¹
+	//void delete_if_pos();
 private:
 	sf::Clock clock;
 	sf::Time elapsed;
 	sf::Event event;
+	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
 };

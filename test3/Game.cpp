@@ -19,6 +19,15 @@ sf::Event& Game::GetEvent()
 {
 	return event;
 }
+void Game::add_enemy()
+{
+    std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
+    enemies.emplace_back(std::move(enemy));
+}
+/*void Game::remove_enemy(Normal_Enemy enemy)
+{
+    //enemies.erase(enemy);
+}*/
 sf::Time Game::Getelapsed()
 {
 	return elapsed;
@@ -27,29 +36,15 @@ void Game::Play()
 {
 	Player player;
 	Normal_Enemy enemy;
-	srand(time(NULL));
+    srand(time(NULL));  
     while (isOpen()) {
         Setelapsed(GetClock().restart());
         while (pollEvent(GetEvent())) {
             if (GetEvent().type == sf::Event::Closed)
                 close();
-            if (GetEvent().type == sf::Event::KeyPressed) {
-                if (GetEvent().key.code == sf::Keyboard::Down) {
-                    player.animate(Getelapsed());
-                }
-                if (GetEvent().key.code == sf::Keyboard::Up) {
-                    player.move(0, -player.get_speedy() * Getelapsed().asSeconds());
-                }
-                if (GetEvent().key.code == sf::Keyboard::Left) {
-                    player.move(-player.getspeedx() * Getelapsed().asSeconds(), 0);
-                }
-                if (GetEvent().key.code == sf::Keyboard::Right) {
-                    player.move(player.getspeedx() * Getelapsed().asSeconds(), 0);
-                }
-            }
         }
         enemy.animate(Getelapsed());
-
+        player.steering(Getelapsed());
         clear(sf::Color::Black);
 
         draw(player);
@@ -58,3 +53,13 @@ void Game::Play()
         display();
     }
 }
+/*void Game::delete_if_pos()
+{
+    for (auto enemy : enemies)
+    {
+        if(enemy.getposition())
+        {
+            remove_enemy(enemy);
+        }
+    }
+}*/

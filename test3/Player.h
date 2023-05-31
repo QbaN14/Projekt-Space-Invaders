@@ -9,6 +9,9 @@ public:
 	void add_points(int pts);
 	//zwraca speedx
 	double getspeedx();
+	//sterowanie strza³kami na klawiaturze
+	void steering(sf::Time elapsed);
+	void check_collision();
 private:
 	int points = 0;
 	double speedx = 200;
