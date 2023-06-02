@@ -1,9 +1,12 @@
 #include "NormalEnemy.h"
-Normal_Enemy::Normal_Enemy() :AnimatedSprite("Resources\\normalenemy.png",sf::IntRect(0,0,348,324))
+Normal_Enemy::Normal_Enemy() :AnimatedSprite("Resources\\normalenemy.png",sf::IntRect(0,0,8,8))
 {
-	setPosition(rand()%729+1, -64.8);
-	setScale(0.2, 0.2);
+	setPosition(rand()%(800-7*8), -7*8);
+	setScale(7, 7);
 	set_hp(1);
 	set_speedy(50);
 	set_points_amount(5);
+	add_animation_frame(sf::IntRect(0, 0, 8, 8));
+	add_animation_frame(sf::IntRect(0, 8, 8, 8));
+	set_ani_fps(2);
 }

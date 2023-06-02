@@ -1,5 +1,5 @@
-#include "NormalEnemy.h"
-class Big_Enemy :public Normal_Enemy
+#include "AnimatedSprite.h"
+class Big_Enemy :public AnimatedSprite
 {
 	Big_Enemy();
 };

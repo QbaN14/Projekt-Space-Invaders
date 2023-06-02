@@ -10,8 +10,14 @@ public:
 	double getspeedx();
 	//sterowanie strza³kami na klawiaturze jeœli po ruchu gracz zmieœci siê na ekranie
 	void steering(sf::Time elapsed);
+	//zwraca liczbe zdobytych punktow
 	int get_points();
+	//wraca na start
+	void back_to_start(sf::Time elapsed);
+	//sprawdza czy gracz moze sie ruszac
+	bool get_can_move();
 private:
+	bool can_move = true;
 	int points = 0;
 	double speedx = 200;
 };

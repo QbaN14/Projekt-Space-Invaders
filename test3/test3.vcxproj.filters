@@ -30,6 +30,9 @@
     <ClCompile Include="NormalEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SmallEnemycpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -64,5 +67,22 @@
     <Image Include="Resources\normalenemy.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\smallenemy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\bigenemy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\life.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\PressStart2P-Regular.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
   </ItemGroup>
 </Project>

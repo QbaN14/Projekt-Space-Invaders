@@ -34,28 +34,40 @@ void Game::add_enemy()
 {
     if (timer >= rand()%2+2) {
         timer = 0;
-        std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-        enemy->setPosition(rand() % 729 + 1, -64.8);
-        enemies.emplace_back(std::move(enemy));
+        int r = rand() % 2+1;
+        if (r == 1)
+        {
+            std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
+            enemy->setPosition(rand() % 729 + 1, -64.8);
+            enemies.emplace_back(std::move(enemy));
+        }
+        else if (r == 2)
+        {
+            std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
+            enemy->setPosition(rand() % 729 + 1, -64.8);
+            enemy->set_hp(2);
+            enemies.emplace_back(std::move(enemy));
+        }
     }
 }
 void Game::remove_enemy(Player& player)
 {
-    float player_radius = 21;
-    float enemy_radius = 34.8;
-    for (auto it = enemies.begin(); it != enemies.end(); )
+    float player_radius = 7*7/2;
+    for (auto it = enemies.begin(); it != enemies.end(); it++)
     {
-        sf::Vector2f player_position(player.getPosition().x + 24.5, player.getPosition().y + 24.5);
+        sf::Vector2f player_position(player.getPosition().x + player_radius, player.getPosition().y + player_radius);
         auto& e = *it;
-        sf::Vector2f enemy_position(e->getPosition().x+174*0.2,e->getPosition().y+162*0.2);
+        float enemy_radius = e->getGlobalBounds().width/2;
+        sf::Vector2f enemy_position(e->getPosition().x+enemy_radius,e->getPosition().y+enemy_radius);
         float distance = std::sqrt(std::pow(enemy_position.x - player_position.x, 2) + std::pow(enemy_position.y - player_position.y, 2));
         if (distance < player_radius + enemy_radius)
         {
+            player.back_to_start(Getelapsed());
             player.remove_hp();
-            player.add_points(e->get_points_amount());
             e->remove_hp();
             if (e->get_hp() == 0)
             {
+                player.add_points(e->get_points_amount());
                 it = enemies.erase(it);
             }
         }
@@ -63,15 +75,27 @@ void Game::remove_enemy(Player& player)
         {
             it = enemies.erase(it);
         }
-        else
-        {
-            ++it;
-        }
     }
 }
 sf::Time Game::Getelapsed()
 {
 	return elapsed;
+}
+void Game::draw_hp(int hp)
+{
+    for (int i = 0; i < hp; i++)
+    {
+        sf::Sprite hpSprite;
+        sf::Texture hpTexture;
+        if (!hpTexture.loadFromFile("Resources\\life.png")) {
+            std::cout << "Could not load texture" << std::endl;
+        }
+        hpSprite.setTextureRect(sf::IntRect(0, 0, 8, 7));
+        hpSprite.setTexture(hpTexture);
+        hpSprite.setScale(4, 4);
+        hpSprite.setPosition(10 + i * 42, 10);
+        draw(hpSprite);
+    }
 }
 void Game::Play()
 {
@@ -84,18 +108,27 @@ void Game::Play()
                 close();
         }
         add_enemy();
-        remove_enemy(player);
-        player.steering(Getelapsed());
+        if (player.get_can_move())
+        {
+            remove_enemy(player);
+            player.steering(Getelapsed());
+        }
+        else
+        {
+            player.back_to_start(Getelapsed());
+        }
         player.step(Getelapsed().asSeconds());
-        points.setString("Points: "+std::to_string(player.get_points()));
+        points.setString("Points: " + std::to_string(player.get_points()));
         clear(sf::Color::Black);
         draw(background);
         draw(player);
         for (const auto& e : enemies)
         {
             e->animate(Getelapsed());
+            e->step(Getelapsed().asSeconds());
             draw(*e);
         }
+        draw_hp(player.get_hp());
         draw(points);
         display();
     }

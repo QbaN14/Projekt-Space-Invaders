@@ -1,5 +1,9 @@
 #include "Player.h"
 #include "NormalEnemy.h"
+#include "SmallEnemy.h"
+#include "BigEnemy.h"
+#include "Asteroid.h"
+#include "Bonus.h"
 class Game :public sf::RenderWindow
 {
 public:
@@ -19,6 +23,8 @@ public:
 	void add_enemy();
 	//usuwa przeciwnika z wektora gdy jest po za plansz¹ i obs³uguje zderzenie z graczem
 	void remove_enemy(Player& player);
+	//rysuje odpowiedni¹ liczbê ¿yæ gracza
+	void draw_hp(int hp);
 private:
 	sf::Text points;
 	Player player;

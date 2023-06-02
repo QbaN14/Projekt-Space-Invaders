@@ -157,6 +157,7 @@
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SmallEnemycpp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
@@ -169,8 +170,15 @@
     <ClInclude Include="SmallEnemy.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\background.png" />
+    <Image Include="Resources\bigenemy.png" />
+    <Image Include="Resources\life.png" />
     <Image Include="Resources\normalenemy.png" />
     <Image Include="Resources\player.png" />
+    <Image Include="Resources\smallenemy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\PressStart2P-Regular.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
