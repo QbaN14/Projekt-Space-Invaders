@@ -15,24 +15,21 @@ double Player::getspeedx()
 }
 void Player::steering(sf::Time elapsed)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    auto bounds = getGlobalBounds();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&bounds.left+bounds.width+getspeedx()*elapsed.asSeconds()<800) {
         move(getspeedx()*elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && bounds.left - getspeedx() * elapsed.asSeconds() > 0) {
         move(-getspeedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && bounds.top-get_speedy() * elapsed.asSeconds() > 0) {
         move(0, -get_speedy() * elapsed.asSeconds());
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && bounds.top + bounds.height + get_speedy() * elapsed.asSeconds() < 600) {
         move(0, get_speedy() * elapsed.asSeconds());
     }
 }
-void Player::check_collision()
+void AnimatedSprite::post_mortem()
 {
-    //auto e = game.get_enemies();
-    //for (auto it = e.begin(); it <= e.end(); it++)
-    //{
-       //// if()
-    //}
+    
 }

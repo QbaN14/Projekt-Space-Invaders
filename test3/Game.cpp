@@ -1,6 +1,4 @@
 #include "Game.h"
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 Game::Game()
 {
 	sf::Vector2u windowSize(800, 600);
@@ -21,8 +19,11 @@ sf::Event& Game::GetEvent()
 }
 void Game::add_enemy()
 {
-    std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-    enemies.emplace_back(std::move(enemy));
+    if (timer >= rand()%2+1) {
+        timer = 0;
+        std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
+        enemies.emplace_back(std::move(enemy));
+    }
 }
 /*void Game::remove_enemy(Normal_Enemy enemy)
 {
@@ -34,22 +35,23 @@ sf::Time Game::Getelapsed()
 }
 void Game::Play()
 {
-	Player player;
-	Normal_Enemy enemy;
-    srand(time(NULL));  
     while (isOpen()) {
+        srand(time(NULL));
+        timer += Getelapsed().asSeconds();
         Setelapsed(GetClock().restart());
         while (pollEvent(GetEvent())) {
             if (GetEvent().type == sf::Event::Closed)
                 close();
         }
-        enemy.animate(Getelapsed());
+        add_enemy();
         player.steering(Getelapsed());
         clear(sf::Color::Black);
-
         draw(player);
-        draw(enemy);
-
+        for (const auto& e : enemies)
+        {
+            e->animate(Getelapsed());
+            draw(*e);
+        }
         display();
     }
 }
@@ -60,6 +62,16 @@ void Game::Play()
         if(enemy.getposition())
         {
             remove_enemy(enemy);
+        }
+    }
+}
+void Game::check_collisions()
+{
+    for (auto enemy :enemies)
+    {
+        if (enemy.)
+        {
+            player.remove_hp();
         }
     }
 }*/

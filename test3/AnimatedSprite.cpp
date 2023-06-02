@@ -1,5 +1,4 @@
 #include "AnimatedSprite.h"
-#include <iostream>
 AnimatedSprite::AnimatedSprite(std::string path,sf::IntRect rect)
 {
     srand(time(NULL));
@@ -22,7 +21,7 @@ void AnimatedSprite::remove_hp()
     hp -= 1;
     if (hp <= 0)
     {
-
+        post_mortem();
     }
 }
 void AnimatedSprite::set_hp(int x)

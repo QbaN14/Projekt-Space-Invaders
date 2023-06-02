@@ -1,7 +1,5 @@
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#pragma once
-class Bonus :public sf::Sprite
+#include "AnimatedSprite.h"
+class Bonus :public AnimatedSprite
 {
 public:
 	void Apply_Bonus();

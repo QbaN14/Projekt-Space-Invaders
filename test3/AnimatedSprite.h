@@ -1,5 +1,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 #pragma once
 class AnimatedSprite :public sf::Sprite
 {
@@ -22,6 +25,7 @@ public:
 	bool check_x();
 	//sprawdza czy tekstura miesci sie na ekranie w y
 	bool check_y();
+	virtual void post_mortem();
 private:
 	double speedy = 0;
 	int hp;

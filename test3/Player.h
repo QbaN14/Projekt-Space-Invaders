@@ -1,4 +1,3 @@
-#pragma once
 #include "AnimatedSprite.h"
 class Player :public AnimatedSprite
 {
@@ -9,9 +8,8 @@ public:
 	void add_points(int pts);
 	//zwraca speedx
 	double getspeedx();
-	//sterowanie strza³kami na klawiaturze
+	//sterowanie strza³kami na klawiaturze jeœli po ruchu gracz zmieœci siê na ekranie
 	void steering(sf::Time elapsed);
-	void check_collision();
 private:
 	int points = 0;
 	double speedx = 200;

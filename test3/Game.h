@@ -1,6 +1,3 @@
-#pragma once
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "NormalEnemy.h"
 class Game :public sf::RenderWindow
@@ -24,9 +21,12 @@ public:
 	//void remove_enemy(Normal_Enemy enemy);
 	//usuwa przeciwnika jesli jest po za plansz¹
 	//void delete_if_pos();
+	void check_collisions();
 private:
+	Player player;
 	sf::Clock clock;
 	sf::Time elapsed;
 	sf::Event event;
+	double timer;
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
 };
