@@ -63,3 +63,11 @@ void AnimatedSprite::set_ani_fps(int x)
 {
     ani_fps = x;
 }
+void AnimatedSprite::set_is_big(bool x)
+{
+    is_big = x;
+}
+bool AnimatedSprite::get_is_big()
+{
+    return is_big;
+}

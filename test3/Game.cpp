@@ -34,18 +34,23 @@ void Game::add_enemy()
 {
     if (timer >= rand()%2+2) {
         timer = 0;
-        int r = rand() % 2+1;
+        int r = rand() % 3+1;
         if (r == 1)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-            enemy->setPosition(rand() % 729 + 1, -64.8);
+            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
         else if (r == 2)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
-            enemy->setPosition(rand() % 729 + 1, -64.8);
-            enemy->set_hp(2);
+            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemies.emplace_back(std::move(enemy));
+        }
+        else if (r == 3)
+        {
+            std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Big_Enemy>();
+            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
     }
@@ -125,7 +130,10 @@ void Game::Play()
         for (const auto& e : enemies)
         {
             e->animate(Getelapsed());
-            e->step(Getelapsed().asSeconds());
+            if (!e->get_is_big())
+            {
+                e->step(Getelapsed().asSeconds());
+            }
             draw(*e);
         }
         draw_hp(player.get_hp());

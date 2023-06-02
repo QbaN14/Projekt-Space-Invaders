@@ -39,6 +39,10 @@ public:
 	void step(double time);
 	//ustawia liczbe klatek w animacji
 	void set_ani_fps(int x);
+	//ustawia wartoœæ is_big
+	void set_is_big(bool x);
+	//zwraca is_big
+	bool get_is_big();
 private:
 	double speedy = 0;
 	int points_amount = 0;
@@ -49,4 +53,5 @@ private:
 	std::vector<sf::IntRect> ani_frames;
 	double elapsed_time=0;
 	int current_frame = 0;
+	bool is_big = false;
 };
