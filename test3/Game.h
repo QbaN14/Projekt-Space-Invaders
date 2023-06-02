@@ -17,16 +17,17 @@ public:
 	sf::Event& GetEvent();
 	//dodaje do wektora przeciwnika
 	void add_enemy();
-	//usuwa z wektora przeciwnika
-	//void remove_enemy(Normal_Enemy enemy);
-	//usuwa przeciwnika jesli jest po za plansz¹
-	//void delete_if_pos();
-	void check_collisions();
+	//usuwa przeciwnika z wektora gdy jest po za plansz¹ i obs³uguje zderzenie z graczem
+	void remove_enemy(Player& player);
 private:
+	sf::Text points;
 	Player player;
 	sf::Clock clock;
 	sf::Time elapsed;
 	sf::Event event;
 	double timer;
+	sf::Texture background_texture;
+	sf::Sprite background;
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
+	sf::Font font;
 };

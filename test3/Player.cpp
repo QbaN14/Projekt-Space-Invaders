@@ -3,11 +3,15 @@ void Player::add_points(int pts)
 {
 	points += pts;
 }
-Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,512,538))
+Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 {
+    //add_animation_frame(sf::IntRect(0, 0, 8, 15));
+    add_animation_frame(sf::IntRect(9, 0, 7, 15));
+    add_animation_frame(sf::IntRect(17, 0, 7, 15));
 	setPosition(348.8,450);
-	setScale(0.2, 0.2);
+	setScale(7, 7);
 	set_speedy(200);
+    set_ani_fps(2);
 }
 double Player::getspeedx()
 {
@@ -29,7 +33,7 @@ void Player::steering(sf::Time elapsed)
         move(0, get_speedy() * elapsed.asSeconds());
     }
 }
-void AnimatedSprite::post_mortem()
+int Player::get_points()
 {
-    
+    return points;
 }

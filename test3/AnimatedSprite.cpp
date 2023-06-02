@@ -19,14 +19,14 @@ void AnimatedSprite::add_hp()
 void AnimatedSprite::remove_hp()
 {
     hp -= 1;
-    if (hp <= 0)
-    {
-        post_mortem();
-    }
 }
 void AnimatedSprite::set_hp(int x)
 {
     hp = x;
+}
+int AnimatedSprite::get_hp()
+{
+    return hp;
 }
 void AnimatedSprite::set_speedy(int x)
 {
@@ -51,4 +51,31 @@ bool AnimatedSprite::check_y()
         return false;
     }
     return true;
+}
+void AnimatedSprite::add_animation_frame(sf::IntRect rect)
+{
+    ani_frames.emplace_back(rect);
+}
+void AnimatedSprite::step(double time)
+{
+    elapsed_time += time;
+    double frametime = 2 / ani_fps;
+    while (elapsed_time >= frametime)
+    {
+        current_frame = (current_frame + 1) % ani_frames.size();
+        elapsed_time -= frametime;
+    }
+    setTextureRect(ani_frames[current_frame]);
+}
+int AnimatedSprite::get_points_amount()
+{
+    return points_amount;
+}
+void AnimatedSprite::set_points_amount(int pts)
+{
+    points_amount = pts;
+}
+void AnimatedSprite::set_ani_fps(int x)
+{
+    ani_fps = x;
 }

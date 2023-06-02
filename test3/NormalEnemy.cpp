@@ -5,4 +5,5 @@ Normal_Enemy::Normal_Enemy() :AnimatedSprite("Resources\\normalenemy.png",sf::In
 	setScale(0.2, 0.2);
 	set_hp(1);
 	set_speedy(50);
+	set_points_amount(5);
 }

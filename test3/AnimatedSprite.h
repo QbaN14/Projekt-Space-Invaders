@@ -25,11 +25,28 @@ public:
 	bool check_x();
 	//sprawdza czy tekstura miesci sie na ekranie w y
 	bool check_y();
-	virtual void post_mortem();
+	//sprawdza kolizje z innymi obiektami
+	void check_collisions();
+	//zwraca wartoœæ liczby punktów
+	int get_points_amount();
+	//ustawia wartosc punktow
+	void set_points_amount(int pts);
+	//zwraca ilosc hp
+	int get_hp();
+	//dodaje klatkê do animacji
+	void add_animation_frame(sf::IntRect rect);
+	//przywoluje kolejn¹ klatkê animacji
+	void step(double time);
+	//ustawia liczbe klatek w animacji
+	void set_ani_fps(int x);
 private:
 	double speedy = 0;
+	int points_amount = 0;
 	int hp;
-	int point_amount;
 	double time_to_shoot;
 	sf::Texture texture;
+	int ani_fps = 0;
+	std::vector<sf::IntRect> ani_frames;
+	double elapsed_time=0;
+	int current_frame = 0;
 };
