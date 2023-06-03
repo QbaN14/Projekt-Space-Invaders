@@ -34,24 +34,38 @@ void Game::add_enemy()
 {
     if (timer >= rand()%2+2) {
         timer = 0;
-        int r = rand() % 3+1;
-        if (r == 1)
+        int r = rand() % 5+1;
+        switch (r)
+        {
+        case 1:
+        case 2:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
             enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
+            break;
         }
-        else if (r == 2)
+        case 3:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
             enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
+            break;
         }
-        else if (r == 3)
+        case 4:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Big_Enemy>();
             enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
+            break;
+        }
+        case 5:
+        {
+            std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Asteroid>();
+            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemies.emplace_back(std::move(enemy));
+            break;
+        }
         }
     }
 }
@@ -65,7 +79,7 @@ void Game::remove_enemy(Player& player)
         float enemy_radius = e->getGlobalBounds().width/2;
         sf::Vector2f enemy_position(e->getPosition().x+enemy_radius,e->getPosition().y+enemy_radius);
         float distance = std::sqrt(std::pow(enemy_position.x - player_position.x, 2) + std::pow(enemy_position.y - player_position.y, 2));
-        if (distance < player_radius + enemy_radius)
+        if (distance < player_radius + enemy_radius&&!e->get_is_asteroid())
         {
             player.back_to_start(Getelapsed());
             player.remove_hp();
@@ -74,11 +88,26 @@ void Game::remove_enemy(Player& player)
             {
                 player.add_points(e->get_points_amount());
                 it = enemies.erase(it);
+                --it;
             }
+        }
+        else if (distance < player_radius + enemy_radius && e->get_is_asteroid())
+        {
+            player.back_to_start(Getelapsed());
+            player.remove_hp();
         }
         else if (e->getGlobalBounds().top > 600)
         {
             it = enemies.erase(it);
+            --it;
+        }
+        else if (e->get_is_asteroid())
+        {
+            if (e->getGlobalBounds().left + e->getGlobalBounds().width < 0 || e->getGlobalBounds().left>800)
+            {
+                it = enemies.erase(it);
+                --it;
+            }
         }
     }
 }
@@ -130,7 +159,7 @@ void Game::Play()
         for (const auto& e : enemies)
         {
             e->animate(Getelapsed());
-            if (!e->get_is_big())
+            if (!e->get_cant_animation())
             {
                 e->step(Getelapsed().asSeconds());
             }

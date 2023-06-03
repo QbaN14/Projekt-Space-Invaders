@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="BigEnemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />

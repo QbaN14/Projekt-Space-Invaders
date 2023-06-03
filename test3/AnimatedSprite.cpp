@@ -10,7 +10,7 @@ AnimatedSprite::AnimatedSprite(std::string path,sf::IntRect rect)
 }
 void AnimatedSprite::animate(sf::Time elapsed)
 {
-    move(0,speedy * elapsed.asSeconds());
+    move(speedx * elapsed.asSeconds(), speedy * elapsed.asSeconds());
 }
 void AnimatedSprite::add_hp()
 {
@@ -35,6 +35,14 @@ void AnimatedSprite::set_speedy(int x)
 double AnimatedSprite::get_speedy()
 {
     return speedy;
+}
+void AnimatedSprite::set_speedx(int x)
+{
+    speedx = x;
+}
+double AnimatedSprite::get_speedx()
+{
+    return speedx;
 }
 void AnimatedSprite::add_animation_frame(sf::IntRect rect)
 {
@@ -63,11 +71,19 @@ void AnimatedSprite::set_ani_fps(int x)
 {
     ani_fps = x;
 }
-void AnimatedSprite::set_is_big(bool x)
+void AnimatedSprite::set_cant_animation(bool x)
 {
-    is_big = x;
+    cant_animation = x;
 }
-bool AnimatedSprite::get_is_big()
+bool AnimatedSprite::get_cant_animation()
 {
-    return is_big;
+    return cant_animation;
+}
+void AnimatedSprite::set_is_asteroid(bool x)
+{
+    is_asteroid = x;
+}
+bool AnimatedSprite::get_is_asteroid()
+{
+    return is_asteroid;
 }

@@ -17,16 +17,12 @@ public:
 	void add_hp();
 	//ustawia liczbê ¿yæ
 	void set_hp(int x);
-	//ustawia speedy
+	//ustawia odpowiednie speed
 	void set_speedy(int x);
-	//zwraca speedy
+	void set_speedx(int x);
+	//zwraca odpowiedni speed
 	double get_speedy();
-	//sprawdza czy tekstura miesci sie na ekranie w x
-	bool check_x();
-	//sprawdza czy tekstura miesci sie na ekranie w y
-	bool check_y();
-	//sprawdza kolizje z innymi obiektami
-	void check_collisions();
+	double get_speedx();
 	//zwraca wartoœæ liczby punktów
 	int get_points_amount();
 	//ustawia wartosc punktow
@@ -39,10 +35,14 @@ public:
 	void step(double time);
 	//ustawia liczbe klatek w animacji
 	void set_ani_fps(int x);
-	//ustawia wartoœæ is_big
-	void set_is_big(bool x);
-	//zwraca is_big
-	bool get_is_big();
+	//ustawia wartoœæ cant_animation
+	void set_cant_animation(bool x);
+	//zwraca cant_animation
+	bool get_cant_animation();
+	//ustawia is_asteroid
+	void set_is_asteroid(bool x);
+	//zwraca is_asteroid
+	bool get_is_asteroid();
 private:
 	double speedy = 0;
 	int points_amount = 0;
@@ -53,5 +53,7 @@ private:
 	std::vector<sf::IntRect> ani_frames;
 	double elapsed_time=0;
 	int current_frame = 0;
-	bool is_big = false;
+	bool cant_animation = false;
+	bool is_asteroid = false;
+	int speedx=0;
 };

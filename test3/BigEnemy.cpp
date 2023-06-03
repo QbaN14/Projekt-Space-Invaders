@@ -6,5 +6,5 @@ Big_Enemy::Big_Enemy() :AnimatedSprite("Resources\\bigenemy.png", sf::IntRect(0,
 	set_hp(1);
 	set_speedy(25);
 	set_points_amount(15);
-	set_is_big(true);
+	set_cant_animation(true);
 }
