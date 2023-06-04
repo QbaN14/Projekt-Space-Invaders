@@ -25,6 +25,8 @@ public:
 	void remove_enemy(Player& player);
 	//rysuje odpowiedni¹ liczbê ¿yæ gracza
 	void draw_hp(int hp);
+	//obs³uguje zderzenie z pociskiem
+	void hit();
 private:
 	sf::Text points;
 	Player player;
@@ -35,5 +37,6 @@ private:
 	sf::Texture background_texture;
 	sf::Sprite background;
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
+	std::vector<std::unique_ptr<Ammunition>> ammo;
 	sf::Font font;
 };

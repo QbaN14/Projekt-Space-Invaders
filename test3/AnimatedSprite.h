@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include "Ammunition.h"
 #pragma once
 class AnimatedSprite :public sf::Sprite
 {
@@ -43,11 +44,18 @@ public:
 	void set_is_asteroid(bool x);
 	//zwraca is_asteroid
 	bool get_is_asteroid();
+	//ustawia time_to_shoot
+	void set_time_to_shoot(double x);
+	//zwraca time_to_shoot
+	double get_time_to_shoot();
+	//odpowiada za strzelanie
+	void shoot(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>> &ammo);
 private:
 	double speedy = 0;
 	int points_amount = 0;
-	int hp;
-	double time_to_shoot;
+	int hp=0;
+	double counter_to_shoot=0;
+	double time_to_shoot=0;
 	sf::Texture texture;
 	int ani_fps = 0;
 	std::vector<sf::IntRect> ani_frames;

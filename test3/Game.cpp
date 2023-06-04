@@ -131,6 +131,44 @@ void Game::draw_hp(int hp)
         draw(hpSprite);
     }
 }
+void Game::hit()
+{
+    for (auto it_a = ammo.begin(); it_a != ammo.end(); it_a++)
+    {
+        auto& a = *it_a;
+        if (a->getGlobalBounds().intersects(player.getGlobalBounds()))
+        {
+            player.back_to_start(Getelapsed());
+            player.remove_hp();
+            it_a = ammo.erase(it_a);
+            it_a--;
+        }
+        else if (a->getGlobalBounds().top > 600 || a->getGlobalBounds().left<0 ||a->getGlobalBounds().left+a->getGlobalBounds().width>800)
+        {
+            it_a = ammo.erase(it_a);
+            it_a--;
+        }
+        else
+        {
+            for (auto it_e = enemies.begin(); it_e != enemies.end(); it_e++)
+            {
+                auto& e = *it_e;
+                if (a->getGlobalBounds().intersects(e->getGlobalBounds()))
+                {
+                    e->remove_hp();
+                    if (e->get_hp() == 0 && !e->get_is_asteroid())
+                    {
+                        player.add_points(e->get_points_amount());
+                        it_e = enemies.erase(it_e);
+                        it_e--;
+                    }
+                    it_a = ammo.erase(it_a);
+                    it_a--;
+                }
+            }
+        }
+    }
+}
 void Game::Play()
 {
     while (isOpen()) {

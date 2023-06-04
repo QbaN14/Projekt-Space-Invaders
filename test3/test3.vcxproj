@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ammunition.cpp" />
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="BigEnemy.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="SmallEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ammunition.h" />
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="BigEnemy.h" />

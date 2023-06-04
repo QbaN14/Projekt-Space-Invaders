@@ -87,3 +87,21 @@ bool AnimatedSprite::get_is_asteroid()
 {
     return is_asteroid;
 }
+void AnimatedSprite::set_time_to_shoot(double x)
+{
+    time_to_shoot = x;
+}
+double AnimatedSprite::get_time_to_shoot()
+{
+    return time_to_shoot;
+}
+void AnimatedSprite::shoot(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+{
+    counter_to_shoot += elapsed.asSeconds();
+    if (counter_to_shoot >= get_time_to_shoot())
+    {
+        counter_to_shoot = 0;
+        std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top + getGlobalBounds().height));
+        ammo.emplace_back(std::move(a));
+    }
+}
