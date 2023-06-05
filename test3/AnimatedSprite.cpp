@@ -87,6 +87,14 @@ bool AnimatedSprite::get_is_asteroid()
 {
     return is_asteroid;
 }
+void AnimatedSprite::set_is_small(bool x)
+{
+    is_small = x;
+}
+bool AnimatedSprite::get_is_small()
+{
+    return is_small;
+}
 void AnimatedSprite::set_time_to_shoot(double x)
 {
     time_to_shoot = x;

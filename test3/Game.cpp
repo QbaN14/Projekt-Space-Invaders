@@ -190,6 +190,7 @@ void Game::Play()
             player.back_to_start(Getelapsed());
         }
         player.step(Getelapsed().asSeconds());
+        hit();
         points.setString("Points: " + std::to_string(player.get_points()));
         clear(sf::Color::Black);
         draw(background);
@@ -197,11 +198,20 @@ void Game::Play()
         for (const auto& e : enemies)
         {
             e->animate(Getelapsed());
+            if (!e->get_is_asteroid()&&!e->get_is_small())
+            {
+                e->shoot(Getelapsed(), ammo);
+            }
             if (!e->get_cant_animation())
             {
                 e->step(Getelapsed().asSeconds());
             }
-            draw(*e);
+                draw(*e);
+        }
+        for (const auto& a : ammo)
+        {
+            a->animate(Getelapsed());
+            draw(*a);
         }
         draw_hp(player.get_hp());
         draw(points);

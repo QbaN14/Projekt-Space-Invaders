@@ -6,11 +6,11 @@ Ammunition::Ammunition(sf::Vector2f pos, bool is_player, bool is_l, bool is_r)
 	}
 	if (is_player)
 	{
-		setTextureRect(sf::IntRect(9,0,9,4));
+		setTextureRect(sf::IntRect(9,0,1,4));
 	}
 	else
 	{
-		setTextureRect(sf::IntRect(0, 0, 0, 4));
+		setTextureRect(sf::IntRect(0, 0, 1, 4));
 	}
 	setTexture(texture);
 	setPosition(pos);

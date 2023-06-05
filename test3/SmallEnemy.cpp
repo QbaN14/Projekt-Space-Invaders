@@ -9,4 +9,5 @@ Small_Enemy::Small_Enemy() :AnimatedSprite("Resources\\smallenemy.png", sf::IntR
 	add_animation_frame(sf::IntRect(0, 0, 6, 6));
 	add_animation_frame(sf::IntRect(0, 7, 6, 6));
 	set_ani_fps(2);
+	set_is_small(true);
 }

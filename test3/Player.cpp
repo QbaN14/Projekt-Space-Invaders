@@ -13,6 +13,7 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 	set_speedy(200);
     set_ani_fps(2);
     set_hp(3);
+    set_time_to_shoot(2);
 }
 double Player::getspeedx()
 {

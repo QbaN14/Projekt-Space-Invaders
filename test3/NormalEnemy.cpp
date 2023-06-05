@@ -9,4 +9,5 @@ Normal_Enemy::Normal_Enemy() :AnimatedSprite("Resources\\normalenemy.png",sf::In
 	add_animation_frame(sf::IntRect(0, 0, 8, 8));
 	add_animation_frame(sf::IntRect(0, 8, 8, 8));
 	set_ani_fps(2);
+	set_time_to_shoot(2);
 }

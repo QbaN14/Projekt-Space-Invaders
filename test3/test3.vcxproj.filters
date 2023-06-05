@@ -91,6 +91,9 @@
     <Image Include="Resources\life.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\ammunition.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\PressStart2P-Regular.ttf">
