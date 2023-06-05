@@ -9,7 +9,7 @@ class Game :public sf::RenderWindow
 public:
 	//ustawia poczatkowe wartosci okna
 	Game();
-	//rozpoczyna grê
+	//g³ówny przebieg gry
 	void Play();
 	//zwraca clock
 	sf::Clock& GetClock();
@@ -29,6 +29,7 @@ public:
 	void hit();
 private:
 	sf::Text points;
+	sf::Text final_score;
 	Player player;
 	sf::Clock clock;
 	sf::Time elapsed;
@@ -39,4 +40,5 @@ private:
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
 	std::vector<std::unique_ptr<Ammunition>> ammo;
 	sf::Font font;
+	bool ending_screen = false;
 };

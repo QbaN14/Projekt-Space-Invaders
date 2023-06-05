@@ -10,10 +10,11 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
     add_animation_frame(sf::IntRect(17, 0, 7, 15));
 	setPosition(400-28,450);
 	setScale(7, 7);
-	set_speedy(200);
+	set_speedy(150);
     set_ani_fps(2);
     set_hp(3);
-    set_time_to_shoot(2);
+    set_time_to_shoot(1.5);
+    set_is_player(true);
 }
 double Player::getspeedx()
 {
@@ -66,4 +67,8 @@ void Player::back_to_start(sf::Time elapsed)
 bool Player::get_can_move()
 {
     return can_move;
+}
+void Player::set_points(int x)
+{
+    points = x;
 }

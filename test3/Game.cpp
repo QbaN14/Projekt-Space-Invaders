@@ -184,12 +184,13 @@ void Game::Play()
         {
             remove_enemy(player);
             player.steering(Getelapsed());
+            player.shoot(Getelapsed(), ammo);
+            player.step(Getelapsed().asSeconds());
         }
         else
         {
             player.back_to_start(Getelapsed());
         }
-        player.step(Getelapsed().asSeconds());
         hit();
         points.setString("Points: " + std::to_string(player.get_points()));
         clear(sf::Color::Black);
@@ -216,5 +217,38 @@ void Game::Play()
         draw_hp(player.get_hp());
         draw(points);
         display();
+        /*if (player.get_hp() == 0)
+        {
+            ending_screen = true;
+            while (ending_screen)
+            {
+                clear(sf::Color::Black);
+                draw(background);
+                while (pollEvent(GetEvent())) {
+                    if (GetEvent().type == sf::Event::Closed)
+                        close();
+                }
+                final_score.setString("Final score:\n" + player.get_points());
+                draw(final_score);
+                sf::RectangleShape rect(sf::Vector2f(50,50));
+                
+                rect.setPosition(200, 200);
+                rect.setFillColor(sf::Color::Green);
+                draw(rect);
+                if (sf::Mouse::getPosition().x>=rect.getGlobalBounds().left&& sf::Mouse::getPosition().x<=rect.getGlobalBounds().left+ rect.getGlobalBounds().width)
+                {
+                    enemies.clear();
+                    ammo.clear();
+                    player.set_hp(3);
+                    player.set_points(0);
+                    player.setPosition(sf::Vector2f(400 - 28, 450));
+                    ending_screen = false;
+                }
+                if ()
+                {
+                    close();
+                }
+            }
+        }*/
     }
 }

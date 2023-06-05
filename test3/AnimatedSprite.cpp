@@ -95,6 +95,14 @@ bool AnimatedSprite::get_is_small()
 {
     return is_small;
 }
+void AnimatedSprite::set_is_player(bool x)
+{
+    is_player = x;
+}
+bool AnimatedSprite::get_is_player()
+{
+    return is_player;
+}
 void AnimatedSprite::set_time_to_shoot(double x)
 {
     time_to_shoot = x;
@@ -109,7 +117,15 @@ void AnimatedSprite::shoot(sf::Time elapsed, std::vector<std::unique_ptr<Ammunit
     if (counter_to_shoot >= get_time_to_shoot())
     {
         counter_to_shoot = 0;
-        std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top + getGlobalBounds().height));
-        ammo.emplace_back(std::move(a));
+        if (get_is_player())
+        {
+            std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top-90),true);
+            ammo.emplace_back(std::move(a));
+        }
+        else
+        {
+            std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top + getGlobalBounds().height));
+            ammo.emplace_back(std::move(a));
+        }
     }
 }

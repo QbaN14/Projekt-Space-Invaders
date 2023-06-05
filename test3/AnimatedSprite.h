@@ -47,6 +47,10 @@ public:
 	//ustawia is_small
 	void set_is_small(bool x);
 	//zwraca is_small
+	bool get_is_player();
+	//ustawia is_player
+	void set_is_player(bool x);
+	//zwraca is_player
 	bool get_is_small();
 	//ustawia time_to_shoot
 	void set_time_to_shoot(double x);
@@ -68,5 +72,6 @@ private:
 	bool cant_animation = false;
 	bool is_asteroid = false;
 	bool is_small = false;
+	bool is_player = false;
 	int speedx=0;
 };

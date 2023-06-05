@@ -12,6 +12,8 @@ public:
 	void steering(sf::Time elapsed);
 	//zwraca liczbe zdobytych punktow
 	int get_points();
+	//ustawia liczbe zdobytych punktow
+	void set_points(int x);
 	//wraca na start
 	void back_to_start(sf::Time elapsed);
 	//sprawdza czy gracz moze sie ruszac

@@ -10,4 +10,6 @@ private:
 	bool is_right = false;
 	bool is_left = false;
 	sf::Texture texture;
+	bool is_player = false;
+	int velocity = 125;
 };
