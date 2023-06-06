@@ -1,11 +1,11 @@
 #include "Ammunition.h"
 Ammunition::Ammunition(sf::Vector2f pos, bool is_p, bool is_l, bool is_r)
 {
-	is_player = is_p;
+	is_players = is_p;
 	if (!texture.loadFromFile("Resources\\ammunition.png")) {
 		std::cout << "Could not load texture" << std::endl;
 	}
-	if (is_player)
+	if (is_players)
 	{
 		setTextureRect(sf::IntRect(0,0,1,4));
 		velocity *= -1;
@@ -25,10 +25,16 @@ void Ammunition::animate(sf::Time elapsed)
 	move(0, velocity * elapsed.asSeconds());
 	if (is_left)
 	{
-		move(-velocity * elapsed.asSeconds(),0);
+		setRotation(45);
+		move(-velocity/sqrt(2) * elapsed.asSeconds(),0);
 	}
 	if (is_right)
 	{
-		move(velocity * elapsed.asSeconds(), 0);
+		setRotation(-45);
+		move(velocity/sqrt(2) * elapsed.asSeconds(), 0);
 	}
+}
+bool Ammunition::get_is_players()
+{
+	return is_players;
 }

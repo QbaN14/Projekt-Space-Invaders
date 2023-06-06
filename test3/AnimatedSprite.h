@@ -8,21 +8,21 @@
 class AnimatedSprite :public sf::Sprite
 {
 public:
-	//odpowiada za wczytanie tekstury i ustawienie pozycji
+	//ustawia poczatkowe wartosci
 	AnimatedSprite(std::string path, sf::IntRect rect);
 	//odpowiada za poruszanie siê
 	void animate(sf::Time elapsed);
 	//odpowiada za usuniêcie 1 ¿ycia
 	void remove_hp();
-	//odpowiada za przywrócenie 1 ¿ycia
-	void add_hp();
 	//ustawia liczbê ¿yæ
 	void set_hp(int x);
-	//ustawia odpowiednie speed
+	//ustawia speedy
 	void set_speedy(int x);
+	//ustawia speedx
 	void set_speedx(int x);
-	//zwraca odpowiedni speed
+	//zwraca speedy
 	double get_speedy();
+	//zwraca speedx
 	double get_speedx();
 	//zwraca wartoœæ liczby punktów
 	int get_points_amount();
@@ -36,28 +36,18 @@ public:
 	void step(double time);
 	//ustawia liczbe klatek w animacji
 	void set_ani_fps(int x);
-	//ustawia wartoœæ cant_animation
-	void set_cant_animation(bool x);
-	//zwraca cant_animation
-	bool get_cant_animation();
-	//ustawia is_asteroid
-	void set_is_asteroid(bool x);
-	//zwraca is_asteroid
-	bool get_is_asteroid();
-	//ustawia is_small
-	void set_is_small(bool x);
-	//zwraca is_small
-	bool get_is_player();
-	//ustawia is_player
-	void set_is_player(bool x);
-	//zwraca is_player
-	bool get_is_small();
 	//ustawia time_to_shoot
 	void set_time_to_shoot(double x);
 	//zwraca time_to_shoot
 	double get_time_to_shoot();
 	//odpowiada za strzelanie
-	void shoot(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>> &ammo);
+	virtual void shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>> &ammo);
+	//zwraca couter_to_shoot
+	double get_counter_to_shoot();
+	//ustawia counter_to_shoot
+	void set_counter_to_shoot(double x);
+	//odpowiada za ci¹g³¹ animacjê obiektów
+	virtual void continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
 private:
 	double speedy = 0;
 	int points_amount = 0;
@@ -70,8 +60,5 @@ private:
 	double elapsed_time=0;
 	int current_frame = 0;
 	bool cant_animation = false;
-	bool is_asteroid = false;
-	bool is_small = false;
-	bool is_player = false;
 	int speedx=0;
 };

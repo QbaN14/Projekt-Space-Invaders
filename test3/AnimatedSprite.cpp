@@ -12,10 +12,6 @@ void AnimatedSprite::animate(sf::Time elapsed)
 {
     move(speedx * elapsed.asSeconds(), speedy * elapsed.asSeconds());
 }
-void AnimatedSprite::add_hp()
-{
-    hp += 1;
-}
 void AnimatedSprite::remove_hp()
 {
     hp -= 1;
@@ -71,38 +67,6 @@ void AnimatedSprite::set_ani_fps(int x)
 {
     ani_fps = x;
 }
-void AnimatedSprite::set_cant_animation(bool x)
-{
-    cant_animation = x;
-}
-bool AnimatedSprite::get_cant_animation()
-{
-    return cant_animation;
-}
-void AnimatedSprite::set_is_asteroid(bool x)
-{
-    is_asteroid = x;
-}
-bool AnimatedSprite::get_is_asteroid()
-{
-    return is_asteroid;
-}
-void AnimatedSprite::set_is_small(bool x)
-{
-    is_small = x;
-}
-bool AnimatedSprite::get_is_small()
-{
-    return is_small;
-}
-void AnimatedSprite::set_is_player(bool x)
-{
-    is_player = x;
-}
-bool AnimatedSprite::get_is_player()
-{
-    return is_player;
-}
 void AnimatedSprite::set_time_to_shoot(double x)
 {
     time_to_shoot = x;
@@ -111,21 +75,20 @@ double AnimatedSprite::get_time_to_shoot()
 {
     return time_to_shoot;
 }
-void AnimatedSprite::shoot(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+void AnimatedSprite::shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
 {
-    counter_to_shoot += elapsed.asSeconds();
-    if (counter_to_shoot >= get_time_to_shoot())
-    {
-        counter_to_shoot = 0;
-        if (get_is_player())
-        {
-            std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top-90),true);
-            ammo.emplace_back(std::move(a));
-        }
-        else
-        {
-            std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top + getGlobalBounds().height));
-            ammo.emplace_back(std::move(a));
-        }
-    }
+}
+double AnimatedSprite::get_counter_to_shoot()
+{
+    return counter_to_shoot;
+}
+void AnimatedSprite::set_counter_to_shoot(double x)
+{
+    counter_to_shoot=x;
+}
+void AnimatedSprite::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+{
+    animate(elapsed);
+    shoot(elapsed, ammo);
+    step(elapsed.asSeconds());
 }

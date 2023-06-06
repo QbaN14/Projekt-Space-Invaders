@@ -18,21 +18,9 @@ Game::Game()
     points.setFont(font);
     points.setCharacterSize(25);
 }
-sf::Clock& Game::GetClock()
-{
-	return clock;
-}
-void Game::Setelapsed(sf::Time e)
-{
-	elapsed = e;
-}
-sf::Event& Game::GetEvent()
-{
-	return event;
-}
 void Game::add_enemy()
 {
-    if (timer >= rand()%2+2) {
+    if (timer >= rand()%2+1.5) {
         timer = 0;
         int r = rand() % 5+1;
         switch (r)
@@ -41,35 +29,35 @@ void Game::add_enemy()
         case 2:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800-int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
             break;
         }
         case 3:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
-            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
             break;
         }
         case 4:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Big_Enemy>();
-            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
             break;
         }
         case 5:
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Asteroid>();
-            enemy->setPosition(rand() % 729 + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
             break;
         }
         }
     }
 }
-void Game::remove_enemy(Player& player)
+void Game::remove_enemy()
 {
     float player_radius = 7*7/2;
     for (auto it = enemies.begin(); it != enemies.end(); it++)
@@ -79,11 +67,14 @@ void Game::remove_enemy(Player& player)
         float enemy_radius = e->getGlobalBounds().width/2;
         sf::Vector2f enemy_position(e->getPosition().x+enemy_radius,e->getPosition().y+enemy_radius);
         float distance = std::sqrt(std::pow(enemy_position.x - player_position.x, 2) + std::pow(enemy_position.y - player_position.y, 2));
-        if (distance < player_radius + enemy_radius&&!e->get_is_asteroid())
+        if (distance < player_radius + enemy_radius)
         {
-            player.back_to_start(Getelapsed());
-            player.remove_hp();
-            e->remove_hp();
+            if (player.get_can_move())
+            {
+                player.remove_hp();
+                e->remove_hp();
+            }
+            player.back_to_start(elapsed);
             if (e->get_hp() == 0)
             {
                 player.add_points(e->get_points_amount());
@@ -91,29 +82,17 @@ void Game::remove_enemy(Player& player)
                 --it;
             }
         }
-        else if (distance < player_radius + enemy_radius && e->get_is_asteroid())
-        {
-            player.back_to_start(Getelapsed());
-            player.remove_hp();
-        }
         else if (e->getGlobalBounds().top > 600)
         {
             it = enemies.erase(it);
             --it;
         }
-        else if (e->get_is_asteroid())
+        else if (e->getGlobalBounds().left + e->getGlobalBounds().width < 0 || e->getGlobalBounds().left>800)
         {
-            if (e->getGlobalBounds().left + e->getGlobalBounds().width < 0 || e->getGlobalBounds().left>800)
-            {
-                it = enemies.erase(it);
-                --it;
-            }
+            it = enemies.erase(it);
+            --it;
         }
     }
-}
-sf::Time Game::Getelapsed()
-{
-	return elapsed;
 }
 void Game::draw_hp(int hp)
 {
@@ -138,8 +117,11 @@ void Game::hit()
         auto& a = *it_a;
         if (a->getGlobalBounds().intersects(player.getGlobalBounds()))
         {
-            player.back_to_start(Getelapsed());
-            player.remove_hp();
+            if (player.get_can_move())
+            {
+                player.remove_hp();
+            }
+            player.back_to_start(elapsed);
             it_a = ammo.erase(it_a);
             it_a--;
         }
@@ -155,10 +137,16 @@ void Game::hit()
                 auto& e = *it_e;
                 if (a->getGlobalBounds().intersects(e->getGlobalBounds()))
                 {
-                    e->remove_hp();
-                    if (e->get_hp() == 0 && !e->get_is_asteroid())
+                    if (player.get_can_move())
                     {
-                        player.add_points(e->get_points_amount());
+                        e->remove_hp();
+                    }
+                    if (e->get_hp() == 0)
+                    {
+                        if (a->get_is_players())
+                        {
+                            player.add_points(e->get_points_amount());
+                        }
                         it_e = enemies.erase(it_e);
                         it_e--;
                     }
@@ -169,86 +157,83 @@ void Game::hit()
         }
     }
 }
-void Game::Play()
+void Game::end_game()
 {
-    while (isOpen()) {
-        srand(time(NULL));
-        timer += Getelapsed().asSeconds();
-        Setelapsed(GetClock().restart());
-        while (pollEvent(GetEvent())) {
-            if (GetEvent().type == sf::Event::Closed)
-                close();
-        }
-        add_enemy();
-        if (player.get_can_move())
+    if (player.get_hp() == 0)
+    {
+        ending_screen = true;
+        while (ending_screen)
         {
-            remove_enemy(player);
-            player.steering(Getelapsed());
-            player.shoot(Getelapsed(), ammo);
-            player.step(Getelapsed().asSeconds());
-        }
-        else
-        {
-            player.back_to_start(Getelapsed());
-        }
-        hit();
-        points.setString("Points: " + std::to_string(player.get_points()));
-        clear(sf::Color::Black);
-        draw(background);
-        draw(player);
-        for (const auto& e : enemies)
-        {
-            e->animate(Getelapsed());
-            if (!e->get_is_asteroid()&&!e->get_is_small())
-            {
-                e->shoot(Getelapsed(), ammo);
-            }
-            if (!e->get_cant_animation())
-            {
-                e->step(Getelapsed().asSeconds());
-            }
-                draw(*e);
-        }
-        for (const auto& a : ammo)
-        {
-            a->animate(Getelapsed());
-            draw(*a);
-        }
-        draw_hp(player.get_hp());
-        draw(points);
-        display();
-        /*if (player.get_hp() == 0)
-        {
-            ending_screen = true;
-            while (ending_screen)
-            {
-                clear(sf::Color::Black);
-                draw(background);
-                while (pollEvent(GetEvent())) {
-                    if (GetEvent().type == sf::Event::Closed)
-                        close();
-                }
-                final_score.setString("Final score:\n" + player.get_points());
-                draw(final_score);
-                sf::RectangleShape rect(sf::Vector2f(50,50));
-                
-                rect.setPosition(200, 200);
-                rect.setFillColor(sf::Color::Green);
-                draw(rect);
-                if (sf::Mouse::getPosition().x>=rect.getGlobalBounds().left&& sf::Mouse::getPosition().x<=rect.getGlobalBounds().left+ rect.getGlobalBounds().width)
-                {
-                    enemies.clear();
-                    ammo.clear();
-                    player.set_hp(3);
-                    player.set_points(0);
-                    player.setPosition(sf::Vector2f(400 - 28, 450));
-                    ending_screen = false;
-                }
-                if ()
-                {
+            clear(sf::Color::Black);
+            draw(background);
+            while (pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
                     close();
-                }
             }
-        }*/
+            final_score.setFillColor(sf::Color::White);
+            final_score.setPosition(100, 100);
+            final_score.setFont(font);
+            final_score.setCharacterSize(25);
+            final_score.setString("Final score: " + std::to_string(player.get_points()));
+            draw(final_score);
+            sf::RectangleShape rect(sf::Vector2f(50, 50));
+            rect.setPosition(200, 200);
+            rect.setFillColor(sf::Color::Green);
+            draw(rect);
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition())))
+            {
+                enemies.clear();
+                ammo.clear();
+                player.set_hp(3);
+                player.set_points(0);
+                player.setPosition(sf::Vector2f(400 - 28, 450));
+                ending_screen = false;
+            }
+            /*if ()
+            {
+                close();
+            }*/
+            display();
+        }
+    }
+}
+void Game::draw_everything()
+{
+    clear(sf::Color::Black);
+    draw(background);
+    draw(player);
+    for (const auto& e : enemies)
+    {
+        draw(*e);
+    }
+    for (const auto& a : ammo)
+    {
+        draw(*a);
+    }
+    draw_hp(player.get_hp());
+    draw(points);
+    display();
+}
+void Game::game_body()
+{
+    srand(time(NULL));
+    timer += elapsed.asSeconds();
+    elapsed = clock.restart();
+    while (pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            close();
+    }
+    add_enemy();
+    player.continous_animation(elapsed, ammo);
+    remove_enemy();
+    hit();
+    for (const auto& e : enemies)
+    {
+        e->continous_animation(elapsed, ammo);
+    }
+    points.setString("Points: " + std::to_string(player.get_points()));
+    for (const auto& a : ammo)
+    {
+        a->animate(elapsed);
     }
 }

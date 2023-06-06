@@ -5,29 +5,24 @@ void Player::add_points(int pts)
 }
 Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 {
-    //add_animation_frame(sf::IntRect(0, 0, 8, 15));
     add_animation_frame(sf::IntRect(9, 0, 7, 15));
     add_animation_frame(sf::IntRect(17, 0, 7, 15));
 	setPosition(400-28,450);
 	setScale(7, 7);
 	set_speedy(150);
+    set_speedx(150);
     set_ani_fps(2);
     set_hp(3);
     set_time_to_shoot(1.5);
-    set_is_player(true);
-}
-double Player::getspeedx()
-{
-	return speedx;
 }
 void Player::steering(sf::Time elapsed)
 {
     auto bounds = getGlobalBounds();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && bounds.left + bounds.width + getspeedx() * elapsed.asSeconds() < 800) {
-        move(getspeedx() * elapsed.asSeconds(), 0);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && bounds.left + bounds.width + get_speedx() * elapsed.asSeconds() < 800) {
+        move(get_speedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && bounds.left - getspeedx() * elapsed.asSeconds() > 0) {
-        move(-getspeedx() * elapsed.asSeconds(), 0);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && bounds.left - get_speedx() * elapsed.asSeconds() > 0) {
+        move(-get_speedx() * elapsed.asSeconds(), 0);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && bounds.top - get_speedy() * elapsed.asSeconds() > 0) {
         move(0, -get_speedy() * elapsed.asSeconds());
@@ -64,11 +59,34 @@ void Player::back_to_start(sf::Time elapsed)
             can_move = true;
         }
 }
-bool Player::get_can_move()
-{
-    return can_move;
-}
 void Player::set_points(int x)
 {
     points = x;
+}
+void Player::shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+{
+    set_counter_to_shoot(get_counter_to_shoot() + elapsed.asSeconds());
+    if (get_counter_to_shoot() >= get_time_to_shoot())
+    {
+        set_counter_to_shoot(0);
+        std::unique_ptr<Ammunition> a = std::make_unique<Ammunition>(sf::Vector2f(getGlobalBounds().left + getGlobalBounds().width / 2, getGlobalBounds().top-90),true);
+        ammo.emplace_back(std::move(a));
+    }
+}
+void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+{
+    if (can_move)
+    {
+        steering(elapsed);
+        shoot(elapsed, ammo);
+        step(elapsed.asSeconds());
+    }
+    else
+    {
+        back_to_start(elapsed);
+    }
+}
+bool Player::get_can_move()
+{
+    return can_move;
 }

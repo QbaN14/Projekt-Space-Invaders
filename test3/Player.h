@@ -6,20 +6,21 @@ public:
 	Player();
 	//dodaje okreslona liczbe punktow
 	void add_points(int pts);
-	//zwraca speedx
-	double getspeedx();
 	//sterowanie strza³kami na klawiaturze jeœli po ruchu gracz zmieœci siê na ekranie
 	void steering(sf::Time elapsed);
 	//zwraca liczbe zdobytych punktow
 	int get_points();
-	//ustawia liczbe zdobytych punktow
-	void set_points(int x);
-	//wraca na start
+	//obiekt wraca na start
 	void back_to_start(sf::Time elapsed);
-	//sprawdza czy gracz moze sie ruszac
+	//odpowiada za strzelanie
+	void shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
+	//odpowiada za ci¹g³¹ animacjê obiektu
+	void continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
+	//ustawia wynik punktowy
+	void set_points(int x);
+	//zwraca can_move
 	bool get_can_move();
 private:
 	bool can_move = true;
 	int points = 0;
-	double speedx = 200;
 };

@@ -1,8 +1,9 @@
 #include "AnimatedSprite.h"
-class Bonus :public AnimatedSprite
+class Bonus :public sf::Sprite
 {
 public:
-	void Apply_Bonus();
+	//ustawia poczatkowe wartosci
+	Bonus();
 private:
 	int bonus_type;
 };

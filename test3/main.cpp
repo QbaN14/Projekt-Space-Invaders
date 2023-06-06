@@ -2,6 +2,10 @@
 int main()
 {
     Game game;
-    game.Play();
+    while (game.isOpen()) {
+        game.game_body();
+        game.draw_everything();
+        game.end_game();
+    }
     return 0;
 }
