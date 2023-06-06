@@ -170,17 +170,51 @@ void Game::end_game()
                 if (event.type == sf::Event::Closed)
                     close();
             }
+
             final_score.setFillColor(sf::Color::White);
             final_score.setPosition(100, 100);
             final_score.setFont(font);
             final_score.setCharacterSize(25);
             final_score.setString("Final score: " + std::to_string(player.get_points()));
+            sf::FloatRect textRect = final_score.getLocalBounds();
+            final_score.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+            final_score.setPosition(sf::Vector2f(400, 200));
             draw(final_score);
-            sf::RectangleShape rect(sf::Vector2f(50, 50));
-            rect.setPosition(200, 200);
-            rect.setFillColor(sf::Color::Green);
-            draw(rect);
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition())))
+
+            rect_restart.setOutlineThickness(1);
+            rect_end.setOutlineThickness(1);
+            rect_restart.setOutlineColor(sf::Color::White);
+            rect_end.setOutlineColor(sf::Color::White);
+            rect_restart.setSize(sf::Vector2f(200, 50));
+            rect_end.setSize(sf::Vector2f(200, 50));
+            rect_restart.setPosition(300, 300);
+            rect_end.setPosition(300, 400);
+            rect_restart.setFillColor(sf::Color::Transparent);
+            rect_end.setFillColor(sf::Color::Transparent);
+            draw(rect_restart);
+            draw(rect_end);
+
+            restart.setFillColor(sf::Color::White);
+            restart.setPosition(300, 300);
+            restart.setFont(font);
+            restart.setCharacterSize(25);
+            restart.setString("Play");
+            sf::FloatRect restartRect = restart.getLocalBounds();
+            restart.setOrigin(restartRect.left + restartRect.width / 2.0f, restartRect.top + restartRect.height / 2.0f);
+            restart.setPosition(sf::Vector2f(400, 325));
+            draw(restart);
+
+            end.setFillColor(sf::Color::White);
+            end.setPosition(300, 400);
+            end.setFont(font);
+            end.setCharacterSize(25);
+            end.setString("Exit");
+            sf::FloatRect endRect = end.getLocalBounds();
+            end.setOrigin(endRect.left + endRect.width / 2.0f, endRect.top + endRect.height / 2.0f);
+            end.setPosition(sf::Vector2f(400, 425));
+            draw(end);
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect_restart.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
             {
                 enemies.clear();
                 ammo.clear();
@@ -189,10 +223,11 @@ void Game::end_game()
                 player.setPosition(sf::Vector2f(400 - 28, 450));
                 ending_screen = false;
             }
-            /*if ()
+            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect_end.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
             {
                 close();
-            }*/
+            }
+
             display();
         }
     }

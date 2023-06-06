@@ -37,4 +37,8 @@ private:
 	std::vector<std::unique_ptr<Ammunition>> ammo;
 	sf::Font font;
 	bool ending_screen = false;
+	sf::RectangleShape rect_restart;
+	sf::RectangleShape rect_end;
+	sf::Text restart;
+	sf::Text end;
 };
