@@ -34,9 +34,15 @@ int Player::get_points()
 {
     return points;
 }
-void Player::back_to_start(sf::Time elapsed)
+void Player::back_to_start(sf::Time elapsed, bool end)
 {
     can_move = false;
+    bonus_applied = false;
+    bonus_timer = 0;
+    set_time_to_shoot(1.5);
+    set_speedx(150);
+    set_speedy(150);
+    can_get_hit = true;
         if (getPosition().x < 400 - 28)
         {
             move(100 * elapsed.asSeconds(), 0);
@@ -53,8 +59,8 @@ void Player::back_to_start(sf::Time elapsed)
         {
             move(0, -100 * elapsed.asSeconds());
         }
-        sf::RectangleShape rect(sf::Vector2f(5, 5));
-        rect.setPosition(400 - 28, 450);
+        sf::RectangleShape rect(sf::Vector2f(10, 10));
+        rect.setPosition(400 - 28-5, 450-5);
         if (rect.getGlobalBounds().contains(getPosition()))
         {
             can_move = true;
@@ -74,8 +80,25 @@ void Player::shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& 
         ammo.emplace_back(std::move(a));
     }
 }
+void Player::remove_bonus(sf::Time elapsed)
+{
+    if (bonus_applied)
+    {
+        bonus_timer -= elapsed.asSeconds();
+        if (bonus_timer <= 0)
+        {
+            bonus_timer = 0;
+            set_time_to_shoot(1.5);
+            set_speedx(150);
+            set_speedy(150);
+            can_get_hit = true;
+            bonus_applied = false;
+        }
+    }
+}
 void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
 {
+    remove_bonus(elapsed);
     if (can_move)
     {
         steering(elapsed);
@@ -90,4 +113,53 @@ void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<A
 bool Player::get_can_move()
 {
     return can_move;
+}
+bool Player::get_can_get_hit()
+{
+    return can_get_hit;
+}
+bool Player::apply_bonus(int type, sf::FloatRect bonusrect)
+{
+    if (getGlobalBounds().intersects(bonusrect) && !bonus_applied)
+    {
+        bonus_applied = true;
+        switch (type)
+        {
+        case 5:
+        {
+            if (get_hp() < 3)
+            {
+                set_hp(get_hp() + 1);
+                return true;
+            }
+        }
+        case 3:
+        {
+            bonus_timer = 10;
+            set_time_to_shoot(0.75);
+            return true;
+        }
+        case 4:
+        {
+            bonus_timer = 10;
+            can_get_hit = false;
+            return true;
+        }
+        case 1:
+        {
+            bonus_timer = 10;
+            set_speedx(get_speedx() * 2);
+            set_speedy(get_speedy() * 2);
+            return true;
+        }
+        case 2:
+        {
+            bonus_timer = 10;
+            set_speedx(get_speedx() / 2);
+            set_speedy(get_speedy() / 2);
+            return true;
+        }
+        }
+    }
+    return false;
 }

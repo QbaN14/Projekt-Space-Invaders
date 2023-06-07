@@ -20,40 +20,38 @@ Game::Game()
 }
 void Game::add_enemy()
 {
-    if (timer >= rand()%2+1) {
+    if (timer >= rand()%2+1.25) {
         timer = 0;
-        int r = rand() % 5+1;
-        switch (r)
-        {
-        case 1:
-        case 2:
+        int r = rand() % 100+1;
+        if (r > 0 && r <= 35)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-            enemy->setPosition(rand() % (800-int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
-            break;
         }
-        case 3:
+        else if (r > 35 && r <= 55)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
-            break;
         }
-        case 4:
+        else if (r > 55 && r <= 75)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Big_Enemy>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
-            break;
         }
-        case 5:
+        else if (r > 75 && r <= 85)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Asteroid>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)) + 1, -enemy->getGlobalBounds().height);
+            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
-            break;
         }
+        else if (r > 85 && r <= 100)
+        {
+            std::unique_ptr<Bonus> bonus = std::make_unique<Bonus>();
+            bonus->setPosition(rand() % (800 - int(bonus->getGlobalBounds().width)), rand()%(600-int(bonus->getGlobalBounds().height)));
+            bonuses.emplace_back(std::move(bonus));
         }
     }
 }
@@ -71,7 +69,10 @@ void Game::remove_enemy()
         {
             if (player.get_can_move())
             {
-                player.remove_hp();
+                if (player.get_can_get_hit())
+                {
+                    player.remove_hp();
+                }
                 e->remove_hp();
             }
             player.back_to_start(elapsed);
@@ -117,11 +118,14 @@ void Game::hit()
         auto& a = *it_a;
         if (a->getGlobalBounds().intersects(player.getGlobalBounds()))
         {
-            if (player.get_can_move())
+            if (player.get_can_get_hit())
             {
-                player.remove_hp();
+                if (player.get_can_move())
+                {
+                    player.remove_hp();
+                }
+                player.back_to_start(elapsed);
             }
-            player.back_to_start(elapsed);
             it_a = ammo.erase(it_a);
             it_a--;
             continue;
@@ -255,6 +259,7 @@ void Game::menu()
 {
     if (player.get_hp() == 0)
     {
+        player.back_to_start(elapsed, true);
         ending_screen = true;
         set_menu();
         while (ending_screen)
@@ -276,7 +281,10 @@ void Game::menu()
             sf::FloatRect finalScoreRect = final_score.getLocalBounds();
             final_score.setOrigin(finalScoreRect.left + finalScoreRect.width / 2, finalScoreRect.top + finalScoreRect.height / 2);
             final_score.setPosition(sf::Vector2f(getSize().x / 2.0f, 150));
-            highscore_text.setString("Highscore: " + highest_score);
+            if (std::stoi(highest_score) != -1)
+            {
+                highscore_text.setString("Highscore: " + highest_score);
+            }
             sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
             highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
             highscore_text.setPosition(sf::Vector2f(getSize().x / 2, 180));
@@ -292,6 +300,7 @@ void Game::menu()
                 {
                     enemies.clear();
                     ammo.clear();
+                    bonuses.clear();
                     player.set_hp(3);
                     player.set_points(0);
                     player.setPosition(sf::Vector2f(400 - 28, 450));
@@ -317,7 +326,10 @@ void Game::draw_everything()
 {
     clear(sf::Color::Black);
     draw(background);
-    draw(player);
+    for (const auto& b : bonuses)
+    {
+        draw(*b);
+    }
     for (const auto& e : enemies)
     {
         draw(*e);
@@ -326,6 +338,7 @@ void Game::draw_everything()
     {
         draw(*a);
     }
+    draw(player);
     draw_hp(player.get_hp());
     draw(points);
     display();
@@ -341,6 +354,15 @@ void Game::game_body()
     }
     add_enemy();
     player.continous_animation(elapsed, ammo);
+    for (auto it_b = bonuses.begin(); it_b != bonuses.end(); it_b++)
+    {
+        auto& b = *it_b;
+        if (player.apply_bonus(b->get_bonus_type(), b->getGlobalBounds()))
+        {
+            it_b = bonuses.erase(it_b);
+            it_b--;
+        }
+    }
     remove_enemy();
     hit();
     for (const auto& e : enemies)

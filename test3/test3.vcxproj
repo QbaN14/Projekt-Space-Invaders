@@ -156,6 +156,7 @@
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="BigEnemy.cpp" />
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="Player.cpp" />

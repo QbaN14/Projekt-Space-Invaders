@@ -42,6 +42,7 @@ private:
 	sf::Sprite background;
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;
 	std::vector<std::unique_ptr<Ammunition>> ammo;
+	std::vector<std::unique_ptr<Bonus>> bonuses;
 	sf::Font font;
 	bool ending_screen = false;
 	sf::RectangleShape rect_restart;

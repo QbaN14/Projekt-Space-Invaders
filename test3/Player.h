@@ -11,7 +11,7 @@ public:
 	//zwraca liczbe zdobytych punktow
 	int get_points();
 	//obiekt wraca na start
-	void back_to_start(sf::Time elapsed);
+	void back_to_start(sf::Time elapsed, bool end=false);
 	//odpowiada za strzelanie
 	void shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
 	//odpowiada za ci¹g³¹ animacjê obiektu
@@ -20,7 +20,16 @@ public:
 	void set_points(int x);
 	//zwraca can_move
 	bool get_can_move();
+	//nadaje bonus po wleceniu w niego: 1 +1hp, 2 2x szybsze strzelanie, 3 niesmiertelny, 4 2x v, 5 1/2v
+	bool apply_bonus(int type, sf::FloatRect bonusrect);
+	//zwraca can_get_hit
+	bool get_can_get_hit();
+	//odpowiada za usuniecie bonusu po odpowiednim czasie
+	void remove_bonus(sf::Time elapsed);
 private:
+	double bonus_timer = 0;
 	bool can_move = true;
+	bool can_get_hit = true;
+	bool bonus_applied = false;
 	int points = -1;
 };
