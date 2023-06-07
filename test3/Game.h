@@ -9,7 +9,7 @@ class Game :public sf::RenderWindow
 {
 public:
 	//ustawia poczatkowe wartosci okna
-	Game();
+	Game(double spawnrate);
 	//dodaje do wektora przeciwnika
 	void add_enemy();
 	//usuwa przeciwnika z wektora gdy jest po za plansz¹ i obs³uguje zderzenie z graczem
@@ -30,6 +30,8 @@ public:
 	void draw_menu();
 	//zapisuje najwyzszy wynik do pliku oraz rysuje go na ekranie
 	void highscore();
+	//obs³uguje bonusy
+	void bonus_haandling();
 private:
 	sf::Text points;
 	sf::Text final_score;
@@ -38,6 +40,7 @@ private:
 	sf::Time elapsed;
 	sf::Event event;
 	double timer;
+	double spawnrate;
 	sf::Texture background_texture;
 	sf::Sprite background;
 	std::vector<std::unique_ptr<AnimatedSprite>> enemies;

@@ -1,12 +1,12 @@
 #include "Game.h"
 int main()
 {
-    Game game;
+    Game game(1.25);
+    srand(static_cast<unsigned>(time(0)));
     while (game.isOpen()) {
         game.menu();
         game.game_body();
         game.draw_everything();
-        game.menu();
     }
     return 0;
 }

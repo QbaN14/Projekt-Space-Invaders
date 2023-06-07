@@ -1,12 +1,10 @@
 #include "Bonus.h"
 Bonus::Bonus()
 {
-	srand(time(NULL));
 	bonus_type = rand()%5+1;
 	if (!texture.loadFromFile("Resources\\bonuses.png")) {
 		std::cout << "Could not load texture" << std::endl;
 	}
-	setPosition(rand() % (800 -40 ), rand()%(600-40));
 	setScale(5, 5);
 	if (bonus_type == 1)
 	{
@@ -33,8 +31,18 @@ Bonus::Bonus()
 		setTextureRect(sf::IntRect(8, 16, 8, 8));
 		setTexture(texture);
 	}
+	setPosition(rand() % (800 - int(getGlobalBounds().width)), rand() % (600 - int(getGlobalBounds().height)));
 }
 int Bonus::get_bonus_type()
 {
 	return bonus_type;
+}
+bool Bonus::count_time_to_destroy(sf::Time elapsed)
+{
+	time_to_destroy -= elapsed.asSeconds();
+	if (time_to_destroy <= 0)
+	{
+		return true;
+	}
+	return false;
 }

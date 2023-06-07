@@ -16,17 +16,16 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 }
 void Player::steering(sf::Time elapsed)
 {
-    auto bounds = getGlobalBounds();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && bounds.left + bounds.width + get_speedx() * elapsed.asSeconds() < 800) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && getGlobalBounds().left + getGlobalBounds().width + get_speedx() * elapsed.asSeconds() < 800) {
         move(get_speedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && bounds.left - get_speedx() * elapsed.asSeconds() > 0) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && getGlobalBounds().left - get_speedx() * elapsed.asSeconds() > 0) {
         move(-get_speedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && bounds.top - get_speedy() * elapsed.asSeconds() > 0) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && getGlobalBounds().top - get_speedy() * elapsed.asSeconds() > 0) {
         move(0, -get_speedy() * elapsed.asSeconds());
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && bounds.top + bounds.height + get_speedy() * elapsed.asSeconds() < 600+8*7) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && getGlobalBounds().top + getGlobalBounds().height + get_speedy() * elapsed.asSeconds() < 600+8*7) {
         move(0, get_speedy() * elapsed.asSeconds());
     }
 }
@@ -45,19 +44,19 @@ void Player::back_to_start(sf::Time elapsed, bool end)
     can_get_hit = true;
         if (getPosition().x < 400 - 28)
         {
-            move(100 * elapsed.asSeconds(), 0);
+            move(get_speedx() * elapsed.asSeconds(), 0);
         }
         else if (getPosition().x > 400 - 28)
         {
-            move(-100 * elapsed.asSeconds(), 0);
+            move(-get_speedx() * elapsed.asSeconds(), 0);
         }
         if (getPosition().y < 450)
         {
-            move(0, 100 * elapsed.asSeconds());
+            move(0, get_speedy() * elapsed.asSeconds());
         }
         else if (getPosition().y > 450)
         {
-            move(0, -100 * elapsed.asSeconds());
+            move(0, -get_speedy() * elapsed.asSeconds());
         }
         sf::RectangleShape rect(sf::Vector2f(10, 10));
         rect.setPosition(400 - 28-5, 450-5);

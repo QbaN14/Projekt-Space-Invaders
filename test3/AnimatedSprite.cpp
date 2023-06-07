@@ -1,7 +1,6 @@
 #include "AnimatedSprite.h"
 AnimatedSprite::AnimatedSprite(std::string path,sf::IntRect rect)
 {
-    srand(time(NULL));
     if (!texture.loadFromFile(path)) {
         std::cout << "Could not load texture" << std::endl;
     }

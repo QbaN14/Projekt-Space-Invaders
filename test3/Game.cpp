@@ -1,8 +1,8 @@
 #include "Game.h"
-Game::Game()
+Game::Game(double sr)
 {
-	sf::Vector2u windowSize(800, 600);
-	create(sf::VideoMode(windowSize.x, windowSize.y), "Space Invaders");
+    spawnrate = sr;
+	create(sf::VideoMode(800,600), "Space Invaders");
 	setFramerateLimit(120);
     if (!background_texture.loadFromFile("Resources\\background.png")) {
         std::cout << "Could not load background texture" << std::endl;
@@ -20,52 +20,45 @@ Game::Game()
 }
 void Game::add_enemy()
 {
-    if (timer >= rand()%2+1.25) {
+    if (timer >= rand()%2+spawnrate) {
         timer = 0;
         int r = rand() % 100+1;
         if (r > 0 && r <= 35)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Normal_Enemy>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
         else if (r > 35 && r <= 55)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Small_Enemy>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
         else if (r > 55 && r <= 75)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Big_Enemy>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
         else if (r > 75 && r <= 85)
         {
             std::unique_ptr<AnimatedSprite> enemy = std::make_unique<Asteroid>();
-            enemy->setPosition(rand() % (800 - int(enemy->getGlobalBounds().width)), -enemy->getGlobalBounds().height);
             enemies.emplace_back(std::move(enemy));
         }
         else if (r > 85 && r <= 100)
         {
+            std::cout << "y";
             std::unique_ptr<Bonus> bonus = std::make_unique<Bonus>();
-            bonus->setPosition(rand() % (800 - int(bonus->getGlobalBounds().width)), rand()%(600-int(bonus->getGlobalBounds().height)));
             bonuses.emplace_back(std::move(bonus));
         }
     }
 }
 void Game::remove_enemy()
 {
-    float player_radius = 7*7/2;
     for (auto it = enemies.begin(); it != enemies.end(); it++)
     {
-        sf::Vector2f player_position(player.getPosition().x + player_radius, player.getPosition().y + player_radius);
         auto& e = *it;
-        float enemy_radius = e->getGlobalBounds().width/2;
-        sf::Vector2f enemy_position(e->getPosition().x+enemy_radius,e->getPosition().y+enemy_radius);
-        float distance = std::sqrt(std::pow(enemy_position.x - player_position.x, 2) + std::pow(enemy_position.y - player_position.y, 2));
-        if (distance < player_radius + enemy_radius)
+        sf::Vector2f enemy_position(e->getPosition().x+ e->getGlobalBounds().width / 2,e->getPosition().y+ e->getGlobalBounds().width / 2);
+        float distance = std::sqrt(std::pow(enemy_position.x - player.getPosition().x + player.getGlobalBounds().width / 2, 2) + std::pow(enemy_position.y - player.getPosition().y + player.getGlobalBounds().width / 2, 2));
+        if (distance < player.getGlobalBounds().width / 2 + e->getGlobalBounds().width / 2)
         {
             if (player.get_can_move())
             {
@@ -76,6 +69,19 @@ void Game::remove_enemy()
                 e->remove_hp();
             }
             player.back_to_start(elapsed);
+            for (auto ite = enemies.begin(); ite != enemies.end(); ite++)
+            {
+                auto& e_i = *ite;
+                if (player.getGlobalBounds().intersects(e_i->getGlobalBounds()))
+                {
+                    ite = enemies.erase(ite);
+                    --ite;
+                }
+                if (it > ite)
+                {
+                    --it;
+                }
+            }
             if (e->get_hp() == 0)
             {
                 player.add_points(e->get_points_amount());
@@ -97,13 +103,13 @@ void Game::remove_enemy()
 }
 void Game::draw_hp(int hp)
 {
+    sf::Texture hpTexture;
+    if (!hpTexture.loadFromFile("Resources\\life.png")) {
+        std::cout << "Could not load texture" << std::endl;
+    }
     for (int i = 0; i < hp; i++)
     {
         sf::Sprite hpSprite;
-        sf::Texture hpTexture;
-        if (!hpTexture.loadFromFile("Resources\\life.png")) {
-            std::cout << "Could not load texture" << std::endl;
-        }
         hpSprite.setTextureRect(sf::IntRect(0, 0, 8, 7));
         hpSprite.setTexture(hpTexture);
         hpSprite.setScale(6, 6);
@@ -202,46 +208,42 @@ void Game::set_menu()
     menuText.setFont(font);
     menuText.setCharacterSize(40);
     menuText.setString("MENU");
-    sf::FloatRect menuRect = menuText.getLocalBounds();
-    menuText.setOrigin(menuRect.left + menuRect.width / 2, menuRect.top + menuRect.height / 2);
+    menuText.setOrigin(menuText.getLocalBounds().left + menuText.getLocalBounds().width / 2, menuText.getLocalBounds().top + menuText.getLocalBounds().height / 2);
 
     highscore_text.setFillColor(sf::Color::White);
     highscore_text.setFont(font);
     highscore_text.setCharacterSize(15);
-    sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
-    highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
+    highscore_text.setOrigin(highscore_text.getLocalBounds().left + highscore_text.getLocalBounds().width / 2, highscore_text.getLocalBounds().top + highscore_text.getLocalBounds().height / 2);
 
     name.setFillColor(sf::Color::White);
     name.setPosition(sf::Vector2f(getSize().x / 2, 50));
     name.setFont(font);
     name.setCharacterSize(50);
     name.setString("Space Raiders");
-    sf::FloatRect nameRect = name.getLocalBounds();
-    name.setOrigin(nameRect.left + nameRect.width / 2, nameRect.top + nameRect.height / 2);
+    name.setOrigin(name.getLocalBounds().left + name.getLocalBounds().width / 2, name.getLocalBounds().top + name.getLocalBounds().height / 2);
 
     rect_restart.setOutlineThickness(1);
-    rect_end.setOutlineThickness(1);
     rect_restart.setOutlineColor(sf::Color::White);
-    rect_end.setOutlineColor(sf::Color::White);
     rect_restart.setSize(sf::Vector2f(200, 50));
-    rect_end.setSize(sf::Vector2f(200, 50));
     rect_restart.setPosition(sf::Vector2f(300, 325));
+
+    rect_end.setOutlineThickness(1);
+    rect_end.setOutlineColor(sf::Color::White);
+    rect_end.setSize(sf::Vector2f(200, 50));
     rect_end.setPosition(sf::Vector2f(300, 400));
 
     restart.setFillColor(sf::Color::White);
     restart.setFont(font);
     restart.setCharacterSize(25);
     restart.setString("Play");
-    sf::FloatRect restartRect = restart.getLocalBounds();
-    restart.setOrigin(restartRect.left + restartRect.width / 2, restartRect.top + restartRect.height / 2);
+    restart.setOrigin(restart.getLocalBounds().left + restart.getLocalBounds().width / 2, restart.getLocalBounds().top + restart.getLocalBounds().height / 2);
     restart.setPosition(sf::Vector2f(getSize().x / 2, 350));
 
     end.setFillColor(sf::Color::White);
     end.setFont(font);
     end.setCharacterSize(25);
     end.setString("Exit");
-    sf::FloatRect endRect = end.getLocalBounds();
-    end.setOrigin(endRect.left + endRect.width / 2, endRect.top + endRect.height / 2);
+    end.setOrigin(end.getLocalBounds().left + end.getLocalBounds().width / 2, end.getLocalBounds().top + end.getLocalBounds().height / 2);
     end.setPosition(sf::Vector2f(getSize().x / 2, 425));
 }
 void Game::draw_menu()
@@ -260,6 +262,11 @@ void Game::menu()
     if (player.get_hp() == 0)
     {
         player.back_to_start(elapsed, true);
+        enemies.clear();
+        ammo.clear();
+        bonuses.clear();
+        player.set_hp(3);
+        player.setPosition(sf::Vector2f(400 - 28, 450));
         ending_screen = true;
         set_menu();
         while (ending_screen)
@@ -298,12 +305,7 @@ void Game::menu()
                 draw(restart);
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {
-                    enemies.clear();
-                    ammo.clear();
-                    bonuses.clear();
-                    player.set_hp(3);
                     player.set_points(0);
-                    player.setPosition(sf::Vector2f(400 - 28, 450));
                     ending_screen = false;
                 }
             }
@@ -319,6 +321,18 @@ void Game::menu()
                 }
             }
             display();
+        }
+    }
+}
+void Game::bonus_haandling()
+{
+    for (auto it_b = bonuses.begin(); it_b != bonuses.end(); it_b++)
+    {
+        auto& b = *it_b;
+        if (player.apply_bonus(b->get_bonus_type(), b->getGlobalBounds()) || b->count_time_to_destroy(elapsed))
+        {
+            it_b = bonuses.erase(it_b);
+            it_b--;
         }
     }
 }
@@ -345,7 +359,6 @@ void Game::draw_everything()
 }
 void Game::game_body()
 {
-    srand(time(NULL));
     timer += elapsed.asSeconds();
     elapsed = clock.restart();
     while (pollEvent(event)) {
@@ -354,24 +367,16 @@ void Game::game_body()
     }
     add_enemy();
     player.continous_animation(elapsed, ammo);
-    for (auto it_b = bonuses.begin(); it_b != bonuses.end(); it_b++)
-    {
-        auto& b = *it_b;
-        if (player.apply_bonus(b->get_bonus_type(), b->getGlobalBounds()))
-        {
-            it_b = bonuses.erase(it_b);
-            it_b--;
-        }
-    }
-    remove_enemy();
-    hit();
     for (const auto& e : enemies)
     {
         e->continous_animation(elapsed, ammo);
     }
-    points.setString("Points: " + std::to_string(player.get_points()));
     for (const auto& a : ammo)
     {
         a->animate(elapsed);
     }
+    bonus_haandling();
+    remove_enemy();
+    hit();
+    points.setString("Points: " + std::to_string(player.get_points()));
 }
