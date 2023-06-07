@@ -3,9 +3,10 @@ int main()
 {
     Game game;
     while (game.isOpen()) {
+        game.menu();
         game.game_body();
         game.draw_everything();
-        game.end_game();
+        game.menu();
     }
     return 0;
 }

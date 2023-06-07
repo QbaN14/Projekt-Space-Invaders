@@ -22,5 +22,5 @@ public:
 	bool get_can_move();
 private:
 	bool can_move = true;
-	int points = 0;
+	int points = -1;
 };

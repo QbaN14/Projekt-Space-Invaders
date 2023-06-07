@@ -177,6 +177,7 @@
     <Image Include="Resources\ammunition.png" />
     <Image Include="Resources\background.png" />
     <Image Include="Resources\bigenemy.png" />
+    <Image Include="Resources\bonuses.png" />
     <Image Include="Resources\life.png" />
     <Image Include="Resources\normalenemy.png" />
     <Image Include="Resources\player.png" />

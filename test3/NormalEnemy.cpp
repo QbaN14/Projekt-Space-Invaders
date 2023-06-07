@@ -4,12 +4,12 @@ Normal_Enemy::Normal_Enemy() :AnimatedSprite("Resources\\normalenemy.png",sf::In
 	setPosition(rand()%(800-7*8), -7*8);
 	setScale(7, 7);
 	set_hp(1);
-	set_speedy(50);
+	set_speedy(60);
 	set_points_amount(10);
 	add_animation_frame(sf::IntRect(0, 0, 8, 8));
 	add_animation_frame(sf::IntRect(0, 8, 8, 8));
 	set_ani_fps(2);
-	set_time_to_shoot(2.5);
+	set_time_to_shoot(2);
 }
 void Normal_Enemy::shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
 {

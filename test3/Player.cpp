@@ -12,7 +12,6 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 	set_speedy(150);
     set_speedx(150);
     set_ani_fps(2);
-    set_hp(3);
     set_time_to_shoot(1.5);
 }
 void Player::steering(sf::Time elapsed)
@@ -54,7 +53,9 @@ void Player::back_to_start(sf::Time elapsed)
         {
             move(0, -100 * elapsed.asSeconds());
         }
-        if (sf::Vector2i(getPosition()) == sf::Vector2i(400 - 28, 450))
+        sf::RectangleShape rect(sf::Vector2f(5, 5));
+        rect.setPosition(400 - 28, 450);
+        if (rect.getGlobalBounds().contains(getPosition()))
         {
             can_move = true;
         }

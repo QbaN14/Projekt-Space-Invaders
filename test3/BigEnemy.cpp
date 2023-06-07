@@ -5,8 +5,8 @@ Big_Enemy::Big_Enemy() :AnimatedSprite("Resources\\bigenemy.png", sf::IntRect(0,
 	setScale(3.5, 3.5);
 	set_hp(1);
 	set_speedy(25);
-	set_points_amount(20);
-	set_time_to_shoot(5);
+	set_points_amount(30);
+	set_time_to_shoot(4);
 }
 void Big_Enemy::shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
 {

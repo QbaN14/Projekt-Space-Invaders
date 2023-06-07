@@ -52,8 +52,8 @@ private:
 	double speedy = 0;
 	int points_amount = 0;
 	int hp=0;
-	double counter_to_shoot=0;
-	double time_to_shoot=0;
+	double time_to_shoot = 0;
+	double counter_to_shoot=1.5;
 	sf::Texture texture;
 	int ani_fps = 0;
 	std::vector<sf::IntRect> ani_frames;

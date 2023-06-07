@@ -15,5 +15,5 @@ private:
 	bool is_left = false;
 	sf::Texture texture;
 	bool is_players = false;
-	int velocity = 200;
+	int velocity = 250;
 };

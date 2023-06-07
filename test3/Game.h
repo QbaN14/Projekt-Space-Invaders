@@ -1,3 +1,4 @@
+#include <fstream>
 #include "Player.h"
 #include "NormalEnemy.h"
 #include "SmallEnemy.h"
@@ -22,7 +23,13 @@ public:
 	//odpowiada za pokazanie wszystkiego na ekranie
 	void draw_everything();
 	//odpowiada za pokazanie ekranu koñcowego gry
-	void end_game();
+	void menu();
+	//tworzy obiekty w menu
+	void set_menu();
+	//rysuje obiekty w menu
+	void draw_menu();
+	//zapisuje najwyzszy wynik do pliku oraz rysuje go na ekranie
+	void highscore();
 private:
 	sf::Text points;
 	sf::Text final_score;
@@ -41,4 +48,8 @@ private:
 	sf::RectangleShape rect_end;
 	sf::Text restart;
 	sf::Text end;
+	std::string highest_score="";
+	sf::Text menuText;
+	sf::Text highscore_text;
+	sf::Text name;
 };

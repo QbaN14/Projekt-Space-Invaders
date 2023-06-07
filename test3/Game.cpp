@@ -20,7 +20,7 @@ Game::Game()
 }
 void Game::add_enemy()
 {
-    if (timer >= rand()%2+1.5) {
+    if (timer >= rand()%2+1) {
         timer = 0;
         int r = rand() % 5+1;
         switch (r)
@@ -105,8 +105,8 @@ void Game::draw_hp(int hp)
         }
         hpSprite.setTextureRect(sf::IntRect(0, 0, 8, 7));
         hpSprite.setTexture(hpTexture);
-        hpSprite.setScale(4, 4);
-        hpSprite.setPosition(10 + i * 42, 10);
+        hpSprite.setScale(6, 6);
+        hpSprite.setPosition(10 + i * 58, 10);
         draw(hpSprite);
     }
 }
@@ -124,11 +124,13 @@ void Game::hit()
             player.back_to_start(elapsed);
             it_a = ammo.erase(it_a);
             it_a--;
+            continue;
         }
         else if (a->getGlobalBounds().top > 600 || a->getGlobalBounds().left<0 ||a->getGlobalBounds().left+a->getGlobalBounds().width>800)
         {
             it_a = ammo.erase(it_a);
             it_a--;
+            continue;
         }
         else
         {
@@ -137,10 +139,7 @@ void Game::hit()
                 auto& e = *it_e;
                 if (a->getGlobalBounds().intersects(e->getGlobalBounds()))
                 {
-                    if (player.get_can_move())
-                    {
-                        e->remove_hp();
-                    }
+                    e->remove_hp();
                     if (e->get_hp() == 0)
                     {
                         if (a->get_is_players())
@@ -157,77 +156,159 @@ void Game::hit()
         }
     }
 }
-void Game::end_game()
+void Game::highscore()
+{
+    std::ifstream file_read("Resources\\highscore.txt");
+    if (file_read) {
+        if (std::getline(file_read, highest_score))
+        {
+            if (std::stoi(highest_score) < player.get_points())
+            {
+                highest_score = std::to_string(player.get_points());
+                std::ofstream file_write("Resources\\highscore.txt", std::ios::trunc);
+                file_write << highest_score;
+                file_write.close();
+            }
+        }
+        file_read.close();
+    }
+    else 
+    {
+        std::ofstream file_write("Resources\\highscore.txt", std::ios::trunc);
+        if (file_write)
+        {
+            highest_score = std::to_string(player.get_points());
+            file_write << player.get_points();
+            file_write.close();
+        }
+        else
+        {
+            std::cout << "Can't create highscore.txt!" << std::endl;
+        }
+    }
+}
+void Game::set_menu()
+{
+    final_score.setFillColor(sf::Color::White);
+    final_score.setFont(font);
+    final_score.setCharacterSize(25);
+
+    menuText.setFillColor(sf::Color::White);
+    menuText.setPosition(sf::Vector2f(getSize().x / 2, 275));
+    menuText.setFont(font);
+    menuText.setCharacterSize(40);
+    menuText.setString("MENU");
+    sf::FloatRect menuRect = menuText.getLocalBounds();
+    menuText.setOrigin(menuRect.left + menuRect.width / 2, menuRect.top + menuRect.height / 2);
+
+    highscore_text.setFillColor(sf::Color::White);
+    highscore_text.setFont(font);
+    highscore_text.setCharacterSize(15);
+    sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
+    highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
+
+    name.setFillColor(sf::Color::White);
+    name.setPosition(sf::Vector2f(getSize().x / 2, 50));
+    name.setFont(font);
+    name.setCharacterSize(50);
+    name.setString("Space Raiders");
+    sf::FloatRect nameRect = name.getLocalBounds();
+    name.setOrigin(nameRect.left + nameRect.width / 2, nameRect.top + nameRect.height / 2);
+
+    rect_restart.setOutlineThickness(1);
+    rect_end.setOutlineThickness(1);
+    rect_restart.setOutlineColor(sf::Color::White);
+    rect_end.setOutlineColor(sf::Color::White);
+    rect_restart.setSize(sf::Vector2f(200, 50));
+    rect_end.setSize(sf::Vector2f(200, 50));
+    rect_restart.setPosition(sf::Vector2f(300, 325));
+    rect_end.setPosition(sf::Vector2f(300, 400));
+
+    restart.setFillColor(sf::Color::White);
+    restart.setFont(font);
+    restart.setCharacterSize(25);
+    restart.setString("Play");
+    sf::FloatRect restartRect = restart.getLocalBounds();
+    restart.setOrigin(restartRect.left + restartRect.width / 2, restartRect.top + restartRect.height / 2);
+    restart.setPosition(sf::Vector2f(getSize().x / 2, 350));
+
+    end.setFillColor(sf::Color::White);
+    end.setFont(font);
+    end.setCharacterSize(25);
+    end.setString("Exit");
+    sf::FloatRect endRect = end.getLocalBounds();
+    end.setOrigin(endRect.left + endRect.width / 2, endRect.top + endRect.height / 2);
+    end.setPosition(sf::Vector2f(getSize().x / 2, 425));
+}
+void Game::draw_menu()
+{
+    draw(final_score);
+    draw(menuText);
+    draw(highscore_text);
+    draw(name);
+    draw(rect_restart);
+    draw(rect_end);
+    draw(restart);
+    draw(end);
+}
+void Game::menu()
 {
     if (player.get_hp() == 0)
     {
         ending_screen = true;
+        set_menu();
         while (ending_screen)
         {
             clear(sf::Color::Black);
             draw(background);
             while (pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
+                {
                     close();
+                    return;
+                }
             }
-
-            final_score.setFillColor(sf::Color::White);
-            final_score.setPosition(100, 100);
-            final_score.setFont(font);
-            final_score.setCharacterSize(25);
-            final_score.setString("Final score: " + std::to_string(player.get_points()));
-            sf::FloatRect textRect = final_score.getLocalBounds();
-            final_score.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-            final_score.setPosition(sf::Vector2f(400, 200));
-            draw(final_score);
-
-            rect_restart.setOutlineThickness(1);
-            rect_end.setOutlineThickness(1);
-            rect_restart.setOutlineColor(sf::Color::White);
-            rect_end.setOutlineColor(sf::Color::White);
-            rect_restart.setSize(sf::Vector2f(200, 50));
-            rect_end.setSize(sf::Vector2f(200, 50));
-            rect_restart.setPosition(300, 300);
-            rect_end.setPosition(300, 400);
+            highscore();
+            if (player.get_points() >= 0)
+            {
+                final_score.setString("Last score: " + std::to_string(player.get_points()));
+            }
+            sf::FloatRect finalScoreRect = final_score.getLocalBounds();
+            final_score.setOrigin(finalScoreRect.left + finalScoreRect.width / 2, finalScoreRect.top + finalScoreRect.height / 2);
+            final_score.setPosition(sf::Vector2f(getSize().x / 2.0f, 150));
+            highscore_text.setString("Highscore: " + highest_score);
+            sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
+            highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
+            highscore_text.setPosition(sf::Vector2f(getSize().x / 2, 180));
             rect_restart.setFillColor(sf::Color::Transparent);
             rect_end.setFillColor(sf::Color::Transparent);
-            draw(rect_restart);
-            draw(rect_end);
-
-            restart.setFillColor(sf::Color::White);
-            restart.setPosition(300, 300);
-            restart.setFont(font);
-            restart.setCharacterSize(25);
-            restart.setString("Play");
-            sf::FloatRect restartRect = restart.getLocalBounds();
-            restart.setOrigin(restartRect.left + restartRect.width / 2.0f, restartRect.top + restartRect.height / 2.0f);
-            restart.setPosition(sf::Vector2f(400, 325));
-            draw(restart);
-
-            end.setFillColor(sf::Color::White);
-            end.setPosition(300, 400);
-            end.setFont(font);
-            end.setCharacterSize(25);
-            end.setString("Exit");
-            sf::FloatRect endRect = end.getLocalBounds();
-            end.setOrigin(endRect.left + endRect.width / 2.0f, endRect.top + endRect.height / 2.0f);
-            end.setPosition(sf::Vector2f(400, 425));
-            draw(end);
-
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect_restart.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
+            draw_menu();
+            if (rect_restart.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
             {
-                enemies.clear();
-                ammo.clear();
-                player.set_hp(3);
-                player.set_points(0);
-                player.setPosition(sf::Vector2f(400 - 28, 450));
-                ending_screen = false;
+                rect_restart.setFillColor(sf::Color::Color(64, 64, 64));
+                draw(rect_restart);
+                draw(restart);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                {
+                    enemies.clear();
+                    ammo.clear();
+                    player.set_hp(3);
+                    player.set_points(0);
+                    player.setPosition(sf::Vector2f(400 - 28, 450));
+                    ending_screen = false;
+                }
             }
-            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && rect_end.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
+            else if (rect_end.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*this))))
             {
-                close();
+                rect_end.setFillColor(sf::Color::Color(64, 64, 64));
+                draw(rect_end);
+                draw(end);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                {
+                    close();
+                    return;
+                }
             }
-
             display();
         }
     }
