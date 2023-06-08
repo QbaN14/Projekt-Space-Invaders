@@ -183,6 +183,7 @@
     <Image Include="Resources\normalenemy.png" />
     <Image Include="Resources\player.png" />
     <Image Include="Resources\smallenemy.png" />
+    <Image Include="Resources\steering.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\PressStart2P-Regular.ttf" />
