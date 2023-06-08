@@ -55,7 +55,9 @@ void Game::remove_enemy()
     for (auto it = enemies.begin(); it != enemies.end(); it++)
     {
         auto& e = *it;
-        if (std::sqrt(std::pow(e->getPosition().x + e->getGlobalBounds().width / 2 - player.getPosition().x + player.getGlobalBounds().width / 2, 2) + std::pow(e->getPosition().y + e->getGlobalBounds().width / 2 - player.getPosition().y + player.getGlobalBounds().width / 2, 2)) < player.getGlobalBounds().width / 2 + e->getGlobalBounds().width / 2)
+        double max_distance = (player.getGlobalBounds().width + e->getGlobalBounds().width) / 2;
+        double actual_distance = std::sqrt(std::pow(e->getPosition().x + e->getGlobalBounds().width / 2 - player.getPosition().x - player.getGlobalBounds().width / 2, 2) + std::pow(e->getPosition().y + e->getGlobalBounds().height / 2 - player.getPosition().y - player.getGlobalBounds().height / 2, 2));
+        if (actual_distance<=max_distance)
         {
             if (player.get_can_move())
             {
@@ -65,7 +67,7 @@ void Game::remove_enemy()
                 }
                 e->remove_hp();
             }
-            player.back_to_start(elapsed);
+            player.back_to_start(elapsed, enemies);
             if (e->get_hp() == 0)
             {
                 player.add_points(e->get_points_amount());
@@ -114,7 +116,7 @@ void Game::hit()
                 {
                     player.remove_hp();
                 }
-                player.back_to_start(elapsed);
+                player.back_to_start(elapsed, enemies);
             }
             it_a = ammo.erase(it_a);
             it_a--;
@@ -145,6 +147,7 @@ void Game::hit()
                     }
                     it_a = ammo.erase(it_a);
                     it_a--;
+                    continue;
                 }
             }
         }
@@ -229,11 +232,27 @@ void Game::set_menu()
     end.setString("Exit");
     end.setOrigin(end.getLocalBounds().left + end.getLocalBounds().width / 2, end.getLocalBounds().top + end.getLocalBounds().height / 2);
     end.setPosition(sf::Vector2f(getSize().x / 2, 425));
+
+    if (!steeringTexture.loadFromFile("Resources\\steering.png")) {
+        std::cout << "Could not load texture" << std::endl;
+    }
+    steeringSprite.setTextureRect(sf::IntRect(0, 0, 512, 512));
+    steeringSprite.setTexture(steeringTexture);
+    steeringSprite.setScale(0.25, 0.25);
+    steeringSprite.setPosition(200-steeringSprite.getGlobalBounds().width/2-restart.getGlobalBounds().width/2, 350);
+
+    steeringinfo.setFillColor(sf::Color::White);
+    steeringinfo.setFont(font);
+    steeringinfo.setCharacterSize(18);
+    steeringinfo.setString("Move with:");
+    steeringinfo.setPosition(200 - steeringinfo.getGlobalBounds().width / 2 - restart.getGlobalBounds().width / 2, 330);
 }
 void Game::draw_menu()
 {
     clear(sf::Color::Black);
     draw(background);
+    draw(steeringSprite);
+    draw(steeringinfo);
     draw(final_score);
     draw(menuText);
     draw(highscore_text);
@@ -247,7 +266,7 @@ void Game::menu()
 {
     if (player.get_hp() == 0)
     {
-        player.back_to_start(elapsed, true);
+        player.back_to_start(elapsed, enemies);
         enemies.clear();
         ammo.clear();
         bonuses.clear();
@@ -255,10 +274,14 @@ void Game::menu()
         player.setPosition(sf::Vector2f(400 - 28, 450));
         ending_screen = true;
         set_menu();
-        highscore();
+        if (player.get_points() >= 0)
+        {
+            final_score.setString("Last score: " + std::to_string(player.get_points()));
+        }
         sf::FloatRect finalScoreRect = final_score.getLocalBounds();
         final_score.setOrigin(finalScoreRect.left + finalScoreRect.width / 2, finalScoreRect.top + finalScoreRect.height / 2);
         final_score.setPosition(sf::Vector2f(getSize().x / 2.0f, 150));
+        highscore();
         if (std::stoi(highest_score) != -1)
         {
             highscore_text.setString("Highscore: " + highest_score);
@@ -266,10 +289,6 @@ void Game::menu()
         sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
         highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
         highscore_text.setPosition(sf::Vector2f(getSize().x / 2, 180));
-        if (player.get_points() >= 0)
-        {
-            final_score.setString("Last score: " + std::to_string(player.get_points()));
-        }
         while (ending_screen)
         {
             while (pollEvent(event)) {
@@ -350,7 +369,7 @@ void Game::game_body()
             close();
     }
     add_enemy();
-    player.continous_animation(elapsed, ammo);
+    player.continous_animation(elapsed, ammo, enemies);
     for (const auto& e : enemies)
     {
         e->continous_animation(elapsed, ammo);

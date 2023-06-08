@@ -56,4 +56,7 @@ private:
 	sf::Text menuText;
 	sf::Text highscore_text;
 	sf::Text name;
+	sf::Text steeringinfo;
+	sf::Texture steeringTexture;
+	sf::Sprite steeringSprite;
 };

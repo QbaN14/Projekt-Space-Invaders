@@ -10,12 +10,12 @@ public:
 	void steering(sf::Time elapsed);
 	//zwraca liczbe zdobytych punktow
 	int get_points();
-	//obiekt wraca na start, nie mo¿e wtedy straciæ ¿ycia
-	void back_to_start(sf::Time elapsed, bool end=false);
+	//obiekt wraca na start, nie mo¿e wtedy straciæ ¿ycia, usuwa przeciwników którzy s¹ blisko miejsca odrodzenia
+	void back_to_start(sf::Time elapsed, std::vector<std::unique_ptr<AnimatedSprite>>& enemies);
 	//odpowiada za strzelanie
 	void shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
 	//odpowiada za ci¹g³¹ animacjê obiektu
-	void continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
+	void continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo, std::vector<std::unique_ptr<AnimatedSprite>> &enemies);
 	//ustawia wynik punktowy gracza
 	void set_points(int x);
 	//sprawdza czy mo¿e siê poruszaæ

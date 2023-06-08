@@ -16,24 +16,24 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 }
 void Player::steering(sf::Time elapsed)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && getGlobalBounds().left + getGlobalBounds().width + get_speedx() * elapsed.asSeconds() < 800) {
-        move(get_speedx() * elapsed.asSeconds(), 0);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && getGlobalBounds().left - get_speedx() * elapsed.asSeconds() > 0) {
-        move(-get_speedx() * elapsed.asSeconds(), 0);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && getGlobalBounds().top - get_speedy() * elapsed.asSeconds() > 0) {
+    if (/*sf::Keyboard::isKeyPressed(sf::Keyboard::W) */ sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && getGlobalBounds().top - get_speedy() * elapsed.asSeconds() > 0) {
         move(0, -get_speedy() * elapsed.asSeconds());
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && getGlobalBounds().top + getGlobalBounds().height + get_speedy() * elapsed.asSeconds() < 600+8*7) {
+    if (/*sf::Keyboard::isKeyPressed(sf::Keyboard::S)*/ sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && getGlobalBounds().top + getGlobalBounds().height + get_speedy() * elapsed.asSeconds() < 600 + getScale().y * 8) {
         move(0, get_speedy() * elapsed.asSeconds());
+    }
+    if (/*sf::Keyboard::isKeyPressed(sf::Keyboard::A) */ sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && getGlobalBounds().left - get_speedx() * elapsed.asSeconds() > 0) {
+        move(-get_speedx() * elapsed.asSeconds(), 0);
+    }
+    if (/*sf::Keyboard::isKeyPressed(sf::Keyboard::D)*/ sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && getGlobalBounds().left + getGlobalBounds().width + get_speedx() * elapsed.asSeconds() < 800) {
+        move(get_speedx() * elapsed.asSeconds(), 0);
     }
 }
 int Player::get_points()
 {
     return points;
 }
-void Player::back_to_start(sf::Time elapsed, bool end)
+void Player::back_to_start(sf::Time elapsed, std::vector<std::unique_ptr<AnimatedSprite>>& enemies)
 {
     can_move = false;
     bonus_applied = false;
@@ -62,6 +62,17 @@ void Player::back_to_start(sf::Time elapsed, bool end)
         rect.setPosition(400 - 28-5, 450-5);
         if (rect.getGlobalBounds().contains(getPosition()))
         {
+            sf::RectangleShape rect_start(sf::Vector2f(450, 450));
+            rect_start.setPosition(400 - 28 - 25, 450 - 25);
+            for (auto it = enemies.begin(); it != enemies.end(); it++)
+            {
+                auto& e = *it;
+                if (std::sqrt(std::pow(e->getPosition().x + e->getGlobalBounds().width / 2 - getPosition().x - getGlobalBounds().width / 2, 2) + std::pow(e->getPosition().y + e->getGlobalBounds().height / 2 - getPosition().y - getGlobalBounds().height / 2, 2))<150)
+                {
+                    it = enemies.erase(it);
+                    --it;
+                }
+            }
             can_move = true;
         }
 }
@@ -95,7 +106,7 @@ void Player::remove_bonus(sf::Time elapsed)
         }
     }
 }
-void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo)
+void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo, std::vector<std::unique_ptr<AnimatedSprite>> &enemies)
 {
     remove_bonus(elapsed);
     if (can_move)
@@ -106,7 +117,7 @@ void Player::continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<A
     }
     else
     {
-        back_to_start(elapsed);
+        back_to_start(elapsed, enemies);
     }
 }
 bool Player::get_can_move()
