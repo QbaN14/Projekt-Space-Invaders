@@ -4,7 +4,7 @@
 class Bonus :public sf::Sprite
 {
 public:
-	//ustawia poczatkowe wartosci
+	//ustawia poczatkowe wartosci oraz teksturê
 	Bonus();
 	//zwraca typ bonusu
 	int get_bonus_type();

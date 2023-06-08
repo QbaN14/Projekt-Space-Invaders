@@ -8,29 +8,29 @@
 class Game :public sf::RenderWindow
 {
 public:
-	//ustawia poczatkowe wartosci okna
+	//ustawia poczatkowe wartosci okna, jego elementów oraz t³o
 	Game(double spawnrate);
-	//dodaje do wektora przeciwnika
+	//dodaje losowo utworzonego przeciwnika do wektora
 	void add_enemy();
-	//usuwa przeciwnika z wektora gdy jest po za plansz¹ i obs³uguje zderzenie z graczem
+	//usuwa przeciwnika z wektora gdy jest po za plansz¹ i obs³uguje zderzenie z graczem (metoda okrêgów)
 	void remove_enemy();
-	//rysuje odpowiedni¹ liczbê ¿yæ gracza
+	//rysuje odpowiedni¹ liczbê ¿yæ gracza na ekranie
 	void draw_hp(int hp);
-	//obs³uguje zderzenie z pociskiem
+	//obs³uguje zderzenia z pociskiem
 	void hit();
 	//odpowiada za g³ówny przebieg gry
 	void game_body();
 	//odpowiada za pokazanie wszystkiego na ekranie
 	void draw_everything();
-	//odpowiada za pokazanie ekranu koñcowego gry
+	//odpowiada za pokazanie ekranu koñcowego gry oraz nadanie mu odpowiednich wartoœci i interakcjê z nim
 	void menu();
-	//tworzy obiekty w menu
+	//tworzy obiekty w menu i nadaje im wartoœci
 	void set_menu();
 	//rysuje obiekty w menu
 	void draw_menu();
-	//zapisuje najwyzszy wynik do pliku oraz rysuje go na ekranie
+	//w zale¿noœci od wyniku gracza, zapisuje najwyzszy wynik do pliku/odczytuje go i decyduje o aktualnym highscore
 	void highscore();
-	//obs³uguje bonusy
+	//obs³uguje zderzenia z bonusami oraz ich ¿ycie
 	void bonus_haandling();
 private:
 	sf::Text points;

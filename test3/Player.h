@@ -2,27 +2,27 @@
 class Player :public AnimatedSprite
 {
 public:
-	//ustawia bazowe parametry dla gracza
+	//ustawia bazowe parametry dla gracza, dodaje klatki animacji
 	Player();
-	//dodaje okreslona liczbe punktow
+	//dodaje okreslona liczbe zdobytych punktow
 	void add_points(int pts);
 	//sterowanie strza³kami na klawiaturze jeœli po ruchu gracz zmieœci siê na ekranie
 	void steering(sf::Time elapsed);
 	//zwraca liczbe zdobytych punktow
 	int get_points();
-	//obiekt wraca na start
+	//obiekt wraca na start, nie mo¿e wtedy straciæ ¿ycia
 	void back_to_start(sf::Time elapsed, bool end=false);
 	//odpowiada za strzelanie
 	void shoot(sf::Time& elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
 	//odpowiada za ci¹g³¹ animacjê obiektu
 	void continous_animation(sf::Time elapsed, std::vector<std::unique_ptr<Ammunition>>& ammo);
-	//ustawia wynik punktowy
+	//ustawia wynik punktowy gracza
 	void set_points(int x);
-	//zwraca can_move
+	//sprawdza czy mo¿e siê poruszaæ
 	bool get_can_move();
 	//nadaje bonus po wleceniu w niego: 1 +1hp, 2 2x szybsze strzelanie, 3 niesmiertelny, 4 2x v, 5 1/2v
 	bool apply_bonus(int type, sf::FloatRect bonusrect);
-	//zwraca can_get_hit
+	//sprawdza czy gracz mo¿e straciæ ¿ycie
 	bool get_can_get_hit();
 	//odpowiada za usuniecie bonusu po odpowiednim czasie
 	void remove_bonus(sf::Time elapsed);

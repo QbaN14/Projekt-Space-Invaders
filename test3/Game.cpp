@@ -45,7 +45,6 @@ void Game::add_enemy()
         }
         else if (r > 85 && r <= 100)
         {
-            std::cout << "y";
             std::unique_ptr<Bonus> bonus = std::make_unique<Bonus>();
             bonuses.emplace_back(std::move(bonus));
         }
@@ -56,9 +55,7 @@ void Game::remove_enemy()
     for (auto it = enemies.begin(); it != enemies.end(); it++)
     {
         auto& e = *it;
-        sf::Vector2f enemy_position(e->getPosition().x+ e->getGlobalBounds().width / 2,e->getPosition().y+ e->getGlobalBounds().width / 2);
-        float distance = std::sqrt(std::pow(enemy_position.x - player.getPosition().x + player.getGlobalBounds().width / 2, 2) + std::pow(enemy_position.y - player.getPosition().y + player.getGlobalBounds().width / 2, 2));
-        if (distance < player.getGlobalBounds().width / 2 + e->getGlobalBounds().width / 2)
+        if (std::sqrt(std::pow(e->getPosition().x + e->getGlobalBounds().width / 2 - player.getPosition().x + player.getGlobalBounds().width / 2, 2) + std::pow(e->getPosition().y + e->getGlobalBounds().width / 2 - player.getPosition().y + player.getGlobalBounds().width / 2, 2)) < player.getGlobalBounds().width / 2 + e->getGlobalBounds().width / 2)
         {
             if (player.get_can_move())
             {
@@ -69,19 +66,6 @@ void Game::remove_enemy()
                 e->remove_hp();
             }
             player.back_to_start(elapsed);
-            for (auto ite = enemies.begin(); ite != enemies.end(); ite++)
-            {
-                auto& e_i = *ite;
-                if (player.getGlobalBounds().intersects(e_i->getGlobalBounds()))
-                {
-                    ite = enemies.erase(ite);
-                    --ite;
-                }
-                if (it > ite)
-                {
-                    --it;
-                }
-            }
             if (e->get_hp() == 0)
             {
                 player.add_points(e->get_points_amount());
@@ -248,6 +232,8 @@ void Game::set_menu()
 }
 void Game::draw_menu()
 {
+    clear(sf::Color::Black);
+    draw(background);
     draw(final_score);
     draw(menuText);
     draw(highscore_text);
@@ -269,10 +255,23 @@ void Game::menu()
         player.setPosition(sf::Vector2f(400 - 28, 450));
         ending_screen = true;
         set_menu();
+        highscore();
+        sf::FloatRect finalScoreRect = final_score.getLocalBounds();
+        final_score.setOrigin(finalScoreRect.left + finalScoreRect.width / 2, finalScoreRect.top + finalScoreRect.height / 2);
+        final_score.setPosition(sf::Vector2f(getSize().x / 2.0f, 150));
+        if (std::stoi(highest_score) != -1)
+        {
+            highscore_text.setString("Highscore: " + highest_score);
+        }
+        sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
+        highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
+        highscore_text.setPosition(sf::Vector2f(getSize().x / 2, 180));
+        if (player.get_points() >= 0)
+        {
+            final_score.setString("Last score: " + std::to_string(player.get_points()));
+        }
         while (ending_screen)
         {
-            clear(sf::Color::Black);
-            draw(background);
             while (pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                 {
@@ -280,21 +279,6 @@ void Game::menu()
                     return;
                 }
             }
-            highscore();
-            if (player.get_points() >= 0)
-            {
-                final_score.setString("Last score: " + std::to_string(player.get_points()));
-            }
-            sf::FloatRect finalScoreRect = final_score.getLocalBounds();
-            final_score.setOrigin(finalScoreRect.left + finalScoreRect.width / 2, finalScoreRect.top + finalScoreRect.height / 2);
-            final_score.setPosition(sf::Vector2f(getSize().x / 2.0f, 150));
-            if (std::stoi(highest_score) != -1)
-            {
-                highscore_text.setString("Highscore: " + highest_score);
-            }
-            sf::FloatRect highscoreRect = highscore_text.getLocalBounds();
-            highscore_text.setOrigin(highscoreRect.left + highscoreRect.width / 2, highscoreRect.top + highscoreRect.height / 2);
-            highscore_text.setPosition(sf::Vector2f(getSize().x / 2, 180));
             rect_restart.setFillColor(sf::Color::Transparent);
             rect_end.setFillColor(sf::Color::Transparent);
             draw_menu();
@@ -379,4 +363,5 @@ void Game::game_body()
     remove_enemy();
     hit();
     points.setString("Points: " + std::to_string(player.get_points()));
+    draw_everything();
 }

@@ -8,9 +8,9 @@
 class AnimatedSprite :public sf::Sprite
 {
 public:
-	//ustawia poczatkowe wartosci
+	//ustawia odpowiedni¹ teksturê
 	AnimatedSprite(std::string path, sf::IntRect rect);
-	//odpowiada za poruszanie siê
+	//odpowiada za poruszanie siê obiektu
 	void animate(sf::Time elapsed);
 	//odpowiada za usuniêcie 1 ¿ycia
 	void remove_hp();
@@ -24,9 +24,9 @@ public:
 	double get_speedy();
 	//zwraca speedx
 	double get_speedx();
-	//zwraca wartoœæ liczby punktów
+	//zwraca wartoœæ liczby punktów przeciwnika
 	int get_points_amount();
-	//ustawia wartosc punktow
+	//ustawia wartosc liczby punktow przeciwnika
 	void set_points_amount(int pts);
 	//zwraca ilosc hp
 	int get_hp();

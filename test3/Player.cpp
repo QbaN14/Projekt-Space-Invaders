@@ -16,16 +16,16 @@ Player::Player() :AnimatedSprite("Resources\\player.png",sf::IntRect(0,0,8,15))
 }
 void Player::steering(sf::Time elapsed)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && getGlobalBounds().left + getGlobalBounds().width + get_speedx() * elapsed.asSeconds() < 800) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && getGlobalBounds().left + getGlobalBounds().width + get_speedx() * elapsed.asSeconds() < 800) {
         move(get_speedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && getGlobalBounds().left - get_speedx() * elapsed.asSeconds() > 0) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && getGlobalBounds().left - get_speedx() * elapsed.asSeconds() > 0) {
         move(-get_speedx() * elapsed.asSeconds(), 0);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && getGlobalBounds().top - get_speedy() * elapsed.asSeconds() > 0) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && getGlobalBounds().top - get_speedy() * elapsed.asSeconds() > 0) {
         move(0, -get_speedy() * elapsed.asSeconds());
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && getGlobalBounds().top + getGlobalBounds().height + get_speedy() * elapsed.asSeconds() < 600+8*7) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && getGlobalBounds().top + getGlobalBounds().height + get_speedy() * elapsed.asSeconds() < 600+8*7) {
         move(0, get_speedy() * elapsed.asSeconds());
     }
 }

@@ -6,7 +6,6 @@ int main()
     while (game.isOpen()) {
         game.menu();
         game.game_body();
-        game.draw_everything();
     }
     return 0;
 }
